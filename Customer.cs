@@ -26,7 +26,6 @@ public class Customer : ICustomerBehavior
             }
         }
     }
-
     protected string Password
     {
         get
