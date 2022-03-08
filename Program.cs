@@ -6,7 +6,17 @@ namespace course_work_OOP
     {
         static void Main(string[] args)
         {
-            ConsoleApp.Run();
+            MovieTheater movieTheater = new MovieTheater();
+            ConsoleApp.Run(movieTheater);
         }
     }
 }
+
+
+
+/*Welcome to the Movie Theater!
+Please choose an operation:
+-log in
+-show billboard
+-exit
+For more,please, log in!*/

@@ -1,6 +1,7 @@
 using System;
-public class Cinema
+public class Movie
 {
+    public int id;
     public string name;
     public string genre;
     public string director;

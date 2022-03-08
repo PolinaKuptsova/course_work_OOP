@@ -9,14 +9,14 @@ static public class Authentication
     // Хешувати паролі користувачів за допомогою алгоритму SHA256. 
     // Функція логіну перевіряє надане ім’я користувача та пароль і повертає об’єкт користувача на основі запису з БД. 
     
-    static public Customer ValidateUsername(string username, CustomerRepository customerRepository)
+    static public Customer ValidateUserName(string name, CustomerRepository customerRepository)
     {
         List<Customer> customers = customerRepository.GetAll();
         if(customers.Count > 0)
         {
             foreach(Customer customer in customers)
             {
-                if(username == customer.Name)
+                if(name == customer.Name)
                 {
                     return customer;
                 }

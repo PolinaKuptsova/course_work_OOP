@@ -8,6 +8,20 @@ public class Customer : ICustomerBehavior
     public int age;
     private CustomerState customerState;
 
+    public Customer()
+    {
+    }
+
+    public Customer(string phoneNumber, int age, string name, string password)
+    {
+        this.isBlocked = false;
+        this.age = age;
+        CustomerState = new BasicCustomerState(this , 0);
+        Name = name;
+        Password = password;
+        PhoneNumber = phoneNumber;
+    }
+
     public string Name
     {
         get
@@ -26,7 +40,7 @@ public class Customer : ICustomerBehavior
             }
         }
     }
-    protected string Password
+    public string Password
     {
         get
         {
@@ -75,11 +89,6 @@ public class Customer : ICustomerBehavior
         throw new NotImplementedException();
     }
 
-    public void LogIn()
-    {
-        throw new NotImplementedException();
-    }
-
     public void LogOut()
     {
         throw new NotImplementedException();
@@ -106,6 +115,11 @@ public class Customer : ICustomerBehavior
     }
 
     public void Exit()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Registrate()
     {
         throw new NotImplementedException();
     }

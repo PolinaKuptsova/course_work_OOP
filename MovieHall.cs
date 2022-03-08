@@ -1,9 +1,10 @@
 using System;
 // do decorator
-public class CinemaHall
+public class MovieHall
 {
+    public int id;
     public int hallNumber;
-    public Cinema cinema;
+    public Movie movie;
     public Ticket [] tickets; // в констркторе присврить колличество мест в зале
     
 }

@@ -2,11 +2,11 @@ using System;
 using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
 
-public class CustomerRepository
+public class MovieHallRepository
 {
     private SqliteConnection connection;
 
-    public CustomerRepository(SqliteConnection connection)
+    public MovieHallRepository(SqliteConnection connection)
     {
         this.connection = connection;
 
