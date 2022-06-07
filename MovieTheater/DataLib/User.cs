@@ -20,14 +20,15 @@ public abstract class User
 
     public User(string phoneNumber, int age, string name, string password)
     {
-        this.isBlocked = false;
-        this.balance = 0.0;
-        this.age = age;
-        //CustomerState = new BasicUserState(this , 0);
         Name = name;
         Password = password;
         PhoneNumber = phoneNumber;
+        this.isBlocked = false;
+        this.balance = 0.0;
+        this.age = age;
+        CustomerState = new BasicCustomerState(new Customer()); // ?? user to customer
     }
+
     public abstract void ShowMyTickets(MovieTheaterComponents movieTheaterComponents);
     public abstract void BuyTicket(MovieTheaterComponents movieTheaterComponents);
     public abstract void UpdateMyAccount(MovieTheaterComponents movieTheaterComponents);

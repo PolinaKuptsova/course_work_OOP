@@ -1,12 +1,12 @@
 using System;
-using Microsoft.Data.Sqlite;
+using Npgsql; 
 using System.Collections.Generic;
 
 public class MovieRepository
 {
-    private SqliteConnection connection;
+    private NpgsqlConnection connection;
 
-    public MovieRepository(SqliteConnection connection)
+    public MovieRepository(NpgsqlConnection connection)
     {
         this.connection = connection;
 
@@ -14,7 +14,7 @@ public class MovieRepository
 
     public long GetCount()
     {
-        SqliteCommand command = connection.CreateCommand();
+        NpgsqlCommand command = connection.CreateCommand();
         command.CommandText = @"SELECT COUNT(*) FROM movies";
         long count = (long)command.ExecuteScalar();
         return count;
@@ -30,9 +30,9 @@ public class MovieRepository
     public List<Movie> GetAll()
     {
         List<Movie> movies = new List<Movie>();
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"SELECT * FROM movies";
-        SqliteDataReader reader = command.ExecuteReader();
+        NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             movies.Add(GetMovie(reader));
@@ -49,11 +49,11 @@ public class MovieRepository
             throw new ArgumentOutOfRangeException(nameof(pageNumber));
         }
         List<Movie> movies = new List<Movie>();
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"SELECT * FROM movies LIMIT $pageSize OFFSET $pageSize * ($pageNumber - 1)";
         command.Parameters.AddWithValue("$pageSize", pageSize);
         command.Parameters.AddWithValue("$pageNumber", pageNumber);
-        SqliteDataReader reader = command.ExecuteReader();
+        NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             Movie Movie = GetMovie(reader);
@@ -65,7 +65,7 @@ public class MovieRepository
 
     public bool Update(long id, Movie movie)
     {
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"UPDATE movies SET title = $title, genre = $genre, director = $director, 
         duration = $duration, premiere = $premiere, lastDayOnScreen = $lastDayOnScreen, description = $description,
         ageRange = $ageRange
@@ -88,10 +88,10 @@ public class MovieRepository
     public Movie GetById(long id)
     {
         Movie Movie = new Movie();
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"SELECT * FROM movies WHERE id = $id";
         command.Parameters.AddWithValue("$id", id);
-        SqliteDataReader reader = command.ExecuteReader();
+        NpgsqlDataReader reader = command.ExecuteReader();
         if (reader.Read())
         {
             Movie = GetMovie(reader);
@@ -107,10 +107,10 @@ public class MovieRepository
     public long GetMovieByTitle(string title)
     {
         Movie movie = new Movie();
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"SELECT * FROM movies WHERE title = $title";
         command.Parameters.AddWithValue("$title", title);
-        SqliteDataReader reader = command.ExecuteReader();
+        NpgsqlDataReader reader = command.ExecuteReader();
         if (reader.Read())
         {
             movie = GetMovie(reader);
@@ -125,7 +125,7 @@ public class MovieRepository
     public int DeleteById(long id)
     {
         Movie Movie = new Movie();
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"DELETE FROM movies WHERE id = $id";
         command.Parameters.AddWithValue("$id", id);
         int nChanged = command.ExecuteNonQuery();
@@ -140,7 +140,7 @@ public class MovieRepository
     }
     public int Insert(Movie movie)
     {
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText =
         @"INSERT INTO movies (title, genre, director, duration, 
             premiere, lastDayOnScreen, description, ageRange) 
@@ -173,10 +173,10 @@ public class MovieRepository
     public List<Movie> GetAllAvalibleMovies()
     {
         List<Movie> movies = new List<Movie>();
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"SELECT * FROM movies WHERE $day BETWEEN $premiere AND $lastDayOnScreen";
         command.Parameters.AddWithValue("$day", DateTime.Now);
-        SqliteDataReader reader = command.ExecuteReader();
+        NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             movies.Add(GetMovie(reader));
@@ -185,7 +185,7 @@ public class MovieRepository
         return movies;
     }
 
-    public Movie GetMovie(SqliteDataReader reader)
+    public Movie GetMovie(NpgsqlDataReader reader)
     {
         Movie movie = new Movie();
         movie.id = long.Parse(reader.GetString(0));

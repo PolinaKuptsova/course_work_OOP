@@ -1,15 +1,15 @@
 using System;
-public class BasicUserState : CustomerState  
+public class BasicCustomerState : CustomerState  
 {
     // Constructor
-    public BasicUserState(Customer customer) : base(customer)
+    public BasicCustomerState(Customer customer) : base(customer)
     {
         this.balance = customer.Balance;
         this.customer = customer;
         Initialize();
     }
 
-    public BasicUserState(CustomerState state)
+    public BasicCustomerState(CustomerState state)
     {
         this.balance = state.Balance;
         this.customer = state.Customer;

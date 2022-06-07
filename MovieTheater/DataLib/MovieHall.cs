@@ -12,6 +12,13 @@ public class MovieHall : Room
     {
     }
 
+    public MovieHall(string typeOfScreen, int rowAmount, int placesInRowAmount)
+    {
+        this.typeOfScreen = typeOfScreen;
+        this.rowAmount = rowAmount;
+        this.placesInRowAmount = placesInRowAmount;
+    }
+
     public override void MakeSchedule(MovieTheaterComponents movieTheaterComponents)
     {
         List<Customer> customers = movieTheaterComponents.userRepository.GetAllByAccessLevel("moderator");

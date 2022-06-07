@@ -8,13 +8,19 @@ public class Session
     public DateTime end;
     public bool has_avalibleSeats;
     public bool is_canceled;
-    public bool[,] places; // availibility в констркторе присврить колличество мест в зале
+
+    public Session(long movie_id, long hall_id, DateTime start, DateTime end, bool has_avalibleSeats, bool is_canceled)
+    {
+        this.movie_id = movie_id;
+        this.hall_id = hall_id;
+        this.start = start;
+        this.end = end;
+        this.has_avalibleSeats = has_avalibleSeats;
+        this.is_canceled = is_canceled;
+    }
 
     public Session()
-    {
-        this.places = new bool[10, 10];
-        // to do 
-    }
+    { }
 
     public override string ToString()
     {

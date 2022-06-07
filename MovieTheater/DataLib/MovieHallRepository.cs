@@ -1,12 +1,12 @@
 using System;
-using Microsoft.Data.Sqlite;
+using Npgsql; 
 using System.Collections.Generic;
 
 public class MovieHallRepository
 {
-    private SqliteConnection connection;
+    private NpgsqlConnection connection;
 
-    public MovieHallRepository(SqliteConnection connection)
+    public MovieHallRepository(NpgsqlConnection connection)
     {
         this.connection = connection;
 
@@ -14,7 +14,7 @@ public class MovieHallRepository
 
     public long GetCount()
     {
-        SqliteCommand command = connection.CreateCommand();
+        NpgsqlCommand command = connection.CreateCommand();
         command.CommandText = @"SELECT COUNT(*) FROM moviehalls";
         long count = (long)command.ExecuteScalar();
         return count;
@@ -30,9 +30,9 @@ public class MovieHallRepository
     public List<MovieHall> GetAll()
     {
         List<MovieHall> moviehalls = new List<MovieHall>();
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"SELECT * FROM moviehalls";
-        SqliteDataReader reader = command.ExecuteReader();
+        NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             moviehalls.Add(Getmoviehall(reader));
@@ -48,11 +48,11 @@ public class MovieHallRepository
             throw new ArgumentOutOfRangeException(nameof(pageNumber));
         }
         List<MovieHall> moviehalls = new List<MovieHall>();
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"SELECT * FROM moviehalls LIMIT $pageSize OFFSET $pageSize * ($pageNumber - 1)";
         command.Parameters.AddWithValue("$pageSize", pageSize);
         command.Parameters.AddWithValue("$pageNumber", pageNumber);
-        SqliteDataReader reader = command.ExecuteReader();
+        NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             MovieHall moviehall = Getmoviehall(reader);
@@ -64,7 +64,7 @@ public class MovieHallRepository
 
     public bool Update(long id, MovieHall moviehall)
     {
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"UPDATE moviehalls SET has_avalibleSeats = $has_avalibleSeats, 
             typeOfScreen = $typeOfScreen,
          WHERE hall_id = $hall_id";
@@ -80,10 +80,10 @@ public class MovieHallRepository
     public MovieHall GetById(long id)
     {
         MovieHall moviehall = new MovieHall();
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"SELECT * FROM moviehalls WHERE hall_id = $hall_id";
         command.Parameters.AddWithValue("$hall_id", id);
-        SqliteDataReader reader = command.ExecuteReader();
+        NpgsqlDataReader reader = command.ExecuteReader();
         if (reader.Read())
         {
             moviehall = Getmoviehall(reader);
@@ -99,7 +99,7 @@ public class MovieHallRepository
     public int DeleteById(long id)
     {
         MovieHall moviehall = new MovieHall();
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"DELETE FROM moviehalls WHERE hall_id = $hall_id";
         command.Parameters.AddWithValue("$hall_id", id);
         int nChanged = command.ExecuteNonQuery();
@@ -114,7 +114,7 @@ public class MovieHallRepository
     }
     public int Insert(MovieHall moviehall)
     {
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText =
         @"INSERT INTO moviehalls (typeOfScreen, has_avalibleSeats) 
             VALUES ($typeOfScreen, $has_avalibleSeats);
@@ -135,7 +135,7 @@ public class MovieHallRepository
 
     }
 
-    public MovieHall Getmoviehall(SqliteDataReader reader)
+    public MovieHall Getmoviehall(NpgsqlDataReader reader)
     {
         MovieHall moviehall = new MovieHall();
         moviehall.hall_id = long.Parse(reader.GetString(0));

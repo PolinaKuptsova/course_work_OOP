@@ -1,12 +1,12 @@
 using System;
-using Microsoft.Data.Sqlite;
+using Npgsql; 
 using System.Collections.Generic;
 
 public class TicketRepository
 {
-    private SqliteConnection connection;
+    private NpgsqlConnection connection;
 
-    public TicketRepository (SqliteConnection connection)
+    public TicketRepository (NpgsqlConnection connection)
     {
         this.connection = connection;
 
@@ -14,7 +14,7 @@ public class TicketRepository
 
     public long GetCount()
     {
-        SqliteCommand command = connection.CreateCommand();
+        NpgsqlCommand command = connection.CreateCommand();
         command.CommandText = @"SELECT COUNT(*) FROM tickets";
         long count = (long)command.ExecuteScalar();
         return count;
@@ -30,9 +30,9 @@ public class TicketRepository
     public List<Ticket> GetAll()
     {
         List<Ticket> tickets = new List<Ticket>();
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"SELECT * FROM tickets";
-        SqliteDataReader reader = command.ExecuteReader();
+        NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             tickets.Add(GetTicket(reader));
@@ -48,11 +48,11 @@ public class TicketRepository
             throw new ArgumentOutOfRangeException(nameof(pageNumber));
         }
         List<Ticket> tickets = new List<Ticket>();
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"SELECT * FROM tickets LIMIT $pageSize OFFSET $pageSize * ($pageNumber - 1)";
         command.Parameters.AddWithValue("$pageSize", pageSize);
         command.Parameters.AddWithValue("$pageNumber", pageNumber);
-        SqliteDataReader reader = command.ExecuteReader();
+        NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             Ticket ticket = GetTicket(reader);
@@ -69,7 +69,7 @@ public class TicketRepository
 
     public bool Update(long id, Ticket ticket)
        {
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"UPDATE tickets SET hallNumber = $hallNumber
          WHERE id = $id";
         command.Parameters.AddWithValue("$id", id);
@@ -88,11 +88,11 @@ public class TicketRepository
     public List<Ticket> GetCustomerTickets(long customer_id)
     {
         List<Ticket> tickets = new List<Ticket>();
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"SELECT tickets.id, tickets.ticketNumber, tickets.place, tickets.row,
             tickets.startMovie, tickets.hallNumber FROM tickets,ticketpurchases WHERE
             ticketpurchases.customer_id = $customer_id AND ticketpurchases.ticket_id = tickets.id"; //??
-        SqliteDataReader reader = command.ExecuteReader();
+        NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             tickets.Add(GetTicket(reader));
@@ -104,10 +104,10 @@ public class TicketRepository
     public Ticket GetById(long id)
     {
         Ticket ticket = new Ticket();
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"SELECT * FROM tickets WHERE id = $id";
         command.Parameters.AddWithValue("$id", id);
-        SqliteDataReader reader = command.ExecuteReader();
+        NpgsqlDataReader reader = command.ExecuteReader();
         if (reader.Read())
         {
             ticket = GetTicket(reader);
@@ -123,7 +123,7 @@ public class TicketRepository
     public int DeleteById(long id)
     {
         Ticket ticket = new Ticket();
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"DELETE FROM tickets WHERE id = $id";
         command.Parameters.AddWithValue("$id", id);
         int nChanged = command.ExecuteNonQuery();
@@ -138,7 +138,7 @@ public class TicketRepository
     }
     public long Insert(Ticket ticket)
     {
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText =
         @"INSERT INTO tickets (movieId, ticketNumber, place, row, startMovie, hallNumber) 
             VALUES ($movieId, $ticketNumber, $place, $row, $startMovie, $hallNumber);
@@ -163,7 +163,7 @@ public class TicketRepository
 
     }
 
-    public Ticket GetTicket(SqliteDataReader reader)
+    public Ticket GetTicket(NpgsqlDataReader reader)
     {
         Ticket ticket = new Ticket();
         ticket.id = long.Parse(reader.GetString(0));
@@ -180,13 +180,13 @@ public class TicketRepository
     public List<Ticket> GetPlacesForSession(Session session)
     {
         List<Ticket> tickets = new List<Ticket>();
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"SELECT * FROM sessions WHERE movie_id = $movie_id 
             AND startMovie = $start AND hallNumber = $hall_id";
         command.Parameters.AddWithValue("$movie_id", session.movie_id);
         command.Parameters.AddWithValue("$start", session.start);
         command.Parameters.AddWithValue("$hall_id", session.hall_id);
-        SqliteDataReader reader = command.ExecuteReader();
+        NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             Ticket ticket = GetTicket(reader);

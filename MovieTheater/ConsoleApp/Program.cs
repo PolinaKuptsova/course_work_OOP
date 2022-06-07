@@ -1,4 +1,5 @@
 ﻿using System;
+using Npgsql;
 
 namespace course_work_OOP
 {
@@ -6,6 +7,9 @@ namespace course_work_OOP
     {
         static void Main(string[] args)
         {
+            var connString = "Host=127.0.0.1;Username=postgres;Password=sofachair2003;Database=movietheatre";
+            var conn = new NpgsqlConnection(connString);
+            conn.Open();
             /*MovieHallRepository assistantRepository = new MovieHallRepository(); ;
             MovieHallRepository movieHallRepository;
             UserRepository userRepository = new UserRepository();
@@ -21,6 +25,8 @@ namespace course_work_OOP
             MovieTheater movieTheater = new MovieTheater(new Customer(), components);
             ConsoleApp.Run(movieTheater);
             movieTheater.SetCommandInfo(); */
+            conn.Close();
+
         }
     }
 }

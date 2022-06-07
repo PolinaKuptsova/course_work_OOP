@@ -1,12 +1,12 @@
 using System;
-using Microsoft.Data.Sqlite;
+using Npgsql; 
 using System.Collections.Generic;
 
 public class SessionRepository
 {
-    private SqliteConnection connection;
+    private NpgsqlConnection connection;
 
-    public SessionRepository(SqliteConnection connection)
+    public SessionRepository(NpgsqlConnection connection)
     {
         this.connection = connection;
 
@@ -14,7 +14,7 @@ public class SessionRepository
 
     public long GetCount()
     {
-        SqliteCommand command = connection.CreateCommand();
+        NpgsqlCommand command = connection.CreateCommand();
         command.CommandText = @"SELECT COUNT(*) FROM sessions";
         long count = (long)command.ExecuteScalar();
         return count;
@@ -30,9 +30,9 @@ public class SessionRepository
     public List<Session> GetAll()
     {
         List<Session> sessions = new List<Session>();
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"SELECT * FROM sessions";
-        SqliteDataReader reader = command.ExecuteReader();
+        NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             sessions.Add(GetSession(reader));
@@ -48,11 +48,11 @@ public class SessionRepository
             throw new ArgumentOutOfRangeException(nameof(pageNumber));
         }
         List<Session> Sessions = new List<Session>();
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"SELECT * FROM Sessions LIMIT $pageSize OFFSET $pageSize * ($pageNumber - 1)";
         command.Parameters.AddWithValue("$pageSize", pageSize);
         command.Parameters.AddWithValue("$pageNumber", pageNumber);
-        SqliteDataReader reader = command.ExecuteReader();
+        NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             Session Session = GetSession(reader);
@@ -64,7 +64,7 @@ public class SessionRepository
 
     public bool Update(long id, Session Session)
     {
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"UPDATE Sessions SET has_avalibleSeats = $has_avalibleSeats, 
             typeOfScreen = $typeOfScreen,
          WHERE id = $id";
@@ -77,7 +77,7 @@ public class SessionRepository
 
     public bool CancelSession(long id, bool isCanceled)
     {
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"UPDATE Sessions SET isCanaceled = $isCanceled,
          WHERE id = $id";
         command.Parameters.AddWithValue("$id", id);
@@ -91,10 +91,10 @@ public class SessionRepository
     public Session GetById(long id)
     {
         Session Session = new Session();
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"SELECT * FROM Sessions WHERE id = $id";
         command.Parameters.AddWithValue("$id", id);
-        SqliteDataReader reader = command.ExecuteReader();
+        NpgsqlDataReader reader = command.ExecuteReader();
         if (reader.Read())
         {
             Session = GetSession(reader);
@@ -110,10 +110,10 @@ public class SessionRepository
     public List<Session> GetMovieSessions(long movie_id)
     {
         List<Session> sessions = new List<Session>();
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"SELECT * FROM sessions WHERE movie_id = $movie_id";
         command.Parameters.AddWithValue("$movie_id", movie_id);
-        SqliteDataReader reader = command.ExecuteReader();
+        NpgsqlDataReader reader  = command.ExecuteReader();
         while (reader.Read())
         {
             sessions.Add(GetSession(reader));
@@ -125,7 +125,7 @@ public class SessionRepository
     public int DeleteById(long id)
     {
         Session Session = new Session();
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"DELETE FROM Sessions WHERE id = $id";
         command.Parameters.AddWithValue("$id", id);
         int nChanged = command.ExecuteNonQuery();
@@ -140,7 +140,7 @@ public class SessionRepository
     }
     public int Insert(Session Session)
     {
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText =
         @"INSERT INTO Sessions (movie_id, hall_id, start, end, has_avalibleSeats) 
             VALUES ($movie_id, $hall_id, $start, $end, $has_avalibleSeats);
@@ -165,7 +165,7 @@ public class SessionRepository
     }
 
 
-    public Session GetSession(SqliteDataReader reader)
+    public Session GetSession(NpgsqlDataReader reader )
     {
         Session Session = new Session();
         Session.id = long.Parse(reader.GetString(0));
@@ -181,10 +181,10 @@ public class SessionRepository
     public Session GetSessionByTime(DateTime movieTime)
     {
         Session session = new Session();
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"Select FROM sessions WHERE start = $movieTime";
         command.Parameters.AddWithValue("$movieTime", movieTime);
-        SqliteDataReader reader = command.ExecuteReader();
+        NpgsqlDataReader reader  = command.ExecuteReader();
         if (reader.Read())
         {
             session = GetSession(reader);
@@ -201,12 +201,12 @@ public class SessionRepository
     public List<Session> GetMovieSessionsOnDay(long movie_id, DateTime chosenDay)
     {
         List<Session> sessions = new List<Session>();
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"SELECT * FROM sessions WHERE movie_id = $movie_id 
             AND start = $chosenDay";
         command.Parameters.AddWithValue("$movie_id", movie_id);
         command.Parameters.AddWithValue("$chosenDay", chosenDay);
-        SqliteDataReader reader = command.ExecuteReader();
+        NpgsqlDataReader reader  = command.ExecuteReader();
         while (reader.Read())
         {
             Session session = GetSession(reader);

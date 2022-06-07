@@ -1,12 +1,12 @@
 using System;
-using Microsoft.Data.Sqlite;
+using Npgsql; 
 using System.Collections.Generic;
 
 public class UserRepository
 {
-    private SqliteConnection connection;
+    private NpgsqlConnection connection;
 
-    public UserRepository(SqliteConnection connection)
+    public UserRepository(NpgsqlConnection connection)
     {
         this.connection = connection;
 
@@ -14,7 +14,7 @@ public class UserRepository
 
     public long GetCount()
     {
-        SqliteCommand command = connection.CreateCommand();
+        NpgsqlCommand command = connection.CreateCommand();
         command.CommandText = @"SELECT COUNT(*) FROM users";
         long count = (long)command.ExecuteScalar();
         return count;
@@ -35,9 +35,9 @@ public class UserRepository
     public List<Customer> GetAll()
     {
         List<Customer> users = new List<Customer>();
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"SELECT * FROM users";
-        SqliteDataReader reader = command.ExecuteReader();
+        NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             users.Add(GetUser(reader));
@@ -49,10 +49,10 @@ public class UserRepository
     public List<Customer> GetAllByAccessLevel(string accessLevel)
     {
         List<Customer> users = new List<Customer>();
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"SELECT * FROM users WHERE accessLevel = $accessLevel" ;
         command.Parameters.AddWithValue("$accessLevel", accessLevel);   
-        SqliteDataReader reader = command.ExecuteReader();
+        NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             users.Add(GetUser(reader));
@@ -68,11 +68,11 @@ public class UserRepository
             throw new ArgumentOutOfRangeException(nameof(pageNumber));
         }
         List<Customer> users = new List<Customer>();
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"SELECT * FROM users LIMIT $pageSize OFFSET $pageSize * ($pageNumber - 1)";
         command.Parameters.AddWithValue("$pageSize", pageSize);
         command.Parameters.AddWithValue("$pageNumber", pageNumber);
-        SqliteDataReader reader = command.ExecuteReader();
+        NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             Customer user = GetUser(reader);
@@ -84,7 +84,7 @@ public class UserRepository
 
     public bool UpdateUserAccount(long id, Customer user)
     {
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"UPDATE users SET name = $name, password = $password,
         phoneNumber = $phoneNumber, age = $age WHERE id = $id";
         command.Parameters.AddWithValue("$id", id);
@@ -100,7 +100,7 @@ public class UserRepository
 
     public bool UpdateUserBalance(long id, double newBalance)
     {
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"UPDATE users SET balance = $balance WHERE id = $id";
         command.Parameters.AddWithValue("$id", id);
         command.Parameters.AddWithValue("balance", newBalance);
@@ -111,7 +111,7 @@ public class UserRepository
 
     public bool UpdateUserStatus(long id, bool isBlocked)
     {
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"UPDATE users SET isBlockes = $isBlocked WHERE id = $id";
         command.Parameters.AddWithValue("$id", id);
         command.Parameters.AddWithValue("isBlocked", isBlocked);
@@ -122,7 +122,7 @@ public class UserRepository
 
     public bool UpdateUserAccessLevel(long id, string accessLevel)
     {
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"UPDATE users SET accessLevel = $accessLevel WHERE id = $id";
         command.Parameters.AddWithValue("$id", id);
         command.Parameters.AddWithValue("accessLevel", accessLevel);
@@ -133,7 +133,7 @@ public class UserRepository
 
     public bool UpdateUserAge(long id, Customer user)
     {
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"UPDATE users SET age = $age WHERE id = $id";
         command.Parameters.AddWithValue("$id", id);
         command.Parameters.AddWithValue("age", user.age);
@@ -145,10 +145,10 @@ public class UserRepository
     public Customer GetById(long id)
     {
         Customer user = new Customer();
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"SELECT * FROM users WHERE id = $id";
         command.Parameters.AddWithValue("$id", id);
-        SqliteDataReader reader = command.ExecuteReader();
+        NpgsqlDataReader reader = command.ExecuteReader();
         if (reader.Read())
         {
             user = GetUser(reader);
@@ -164,7 +164,7 @@ public class UserRepository
     public int DeleteById(long id)
     {
         Customer user = new Customer();
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"DELETE FROM users WHERE id = $id";
         command.Parameters.AddWithValue("$id", id);
         int nChanged = command.ExecuteNonQuery();
@@ -179,7 +179,7 @@ public class UserRepository
     }
     public int Insert(Customer user)
     {
-        SqliteCommand command = this.connection.CreateCommand();
+        NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText =
         @"INSERT INTO users (name, password, phoneNumber, age, isBlocked, accessLevel, balance) 
             VALUES ($name, $password, $phoneNumber, $age, $isBlocked, $accessLevel, $balance);
@@ -207,7 +207,7 @@ public class UserRepository
 
     }
 
-    public Customer GetUser(SqliteDataReader reader)
+    public Customer GetUser(NpgsqlDataReader reader)
     {
         Customer user = new Customer();;
         user.id = long.Parse(reader.GetString(0));
