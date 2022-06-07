@@ -27,7 +27,7 @@ public abstract class AbstrMovieTheater
     public abstract void ProcessLogIn();
     public abstract void ProcessRegistrate();
     public abstract void ProcessShowBillboard();
-    protected AbstrMovieTheater(Customer user, 
+    protected AbstrMovieTheater(Customer user,
         MovieTheaterComponents movieTheaterComponents)
     {
         this.user = user;
