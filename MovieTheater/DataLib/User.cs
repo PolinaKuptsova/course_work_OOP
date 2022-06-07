@@ -28,11 +28,11 @@ public abstract class User
         Password = password;
         PhoneNumber = phoneNumber;
     }
-    public abstract void ShowMyTickets(MovieTheater movieTheater);
-    public abstract void BuyTicket(MovieTheater movieTheater);
-    public abstract void UpdateMyAccount(MovieTheater movieTheater);
-    public abstract void DeleteMyAccount(MovieTheater movieTheater);
-    public abstract void ShowMyAccount(MovieTheater movieTheater);
+    public abstract void ShowMyTickets(MovieTheaterComponents movieTheaterComponents);
+    public abstract void BuyTicket(MovieTheaterComponents movieTheaterComponents);
+    public abstract void UpdateMyAccount(MovieTheaterComponents movieTheaterComponents);
+    public abstract void DeleteMyAccount(MovieTheaterComponents movieTheaterComponents);
+    public abstract void ShowMyAccount(MovieTheaterComponents movieTheaterComponents);
     public abstract string Name { get; set;}
     public abstract string PhoneNumber { get; set; }
     public abstract double Balance { get; set; }

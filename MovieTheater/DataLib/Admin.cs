@@ -17,21 +17,21 @@ public sealed class Admin : MovieAssistant
         };
     }
 
-    public void AddMovieAssistant(MovieTheater movieTheater)
+    public void AddMovieAssistant(MovieTheaterComponents movieTheaterComponents)
     {
         Console.WriteLine("Enter the name of a user: ");
         string userName = Console.ReadLine();
-        long user_id = movieTheater.userRepository.GetUserByName(userName);
+        long user_id = movieTheaterComponents.userRepository.GetUserByName(userName);
         if(user_id == 0){throw new Exception($"No such user '{userName}'");}
 
-        movieTheater.userRepository.UpdateUserAccessLevel(user_id, "moderator");
+        movieTheaterComponents.userRepository.UpdateUserAccessLevel(user_id, "moderator");
     }
 
-    public void BlockUser(MovieTheater movieTheater)
+    public void BlockUser(MovieTheaterComponents movieTheaterComponents)
     {
         Console.WriteLine("Enter the name of a customer you want to block/unblock");
         string userName = Console.ReadLine();
-        long user_id = movieTheater.userRepository.GetUserByName(userName);
+        long user_id = movieTheaterComponents.userRepository.GetUserByName(userName);
 
         Console.WriteLine("Enter 'true' if you want to block and 'false' if you want to unblock the user:");
         string newStatus = Console.ReadLine();
@@ -39,21 +39,21 @@ public sealed class Admin : MovieAssistant
 
         if (user_id != 0)
         {
-            bool res = movieTheater.userRepository.UpdateUserStatus(user_id, user_status);
+            bool res = movieTheaterComponents.userRepository.UpdateUserStatus(user_id, user_status);
             return;
         }
         throw new Exception("Incorrect name '{userName} or new status '{newStatus}'.'");
     }
 
-    public void DeleteMovieAssistant(MovieTheater movieTheater)
+    public void DeleteMovieAssistant(MovieTheaterComponents movieTheaterComponents)
     {
         Console.WriteLine("Enter the name of a movieassistant you want to delete");
         string assistName = Console.ReadLine();
-        long assist_id = movieTheater.userRepository.GetUserByName(assistName);
+        long assist_id = movieTheaterComponents.userRepository.GetUserByName(assistName);
 
         if (assist_id != 0)
         {
-            int res = movieTheater.userRepository.DeleteById(assist_id);
+            int res = movieTheaterComponents.userRepository.DeleteById(assist_id);
             return;
         }
         throw new Exception("$Incorrect name '{assistName}.'");

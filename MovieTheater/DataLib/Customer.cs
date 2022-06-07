@@ -94,20 +94,20 @@ public class Customer : User
         return string.Format($"Welcome, {Name}\r\nPhone number: {PhoneNumber}\r\nYour state: {CustomerState}\r\nAge: {age}");
     }
 
-    public override void BuyTicket(MovieTheater movieTheater)
+    public override void BuyTicket(MovieTheaterComponents movieTheaterComponents)
     {
         if(this.isBlocked){throw new Exception("Your account has been blocked!");}
         string today_str = DateTime.Now.ToString("d");
 
         Console.WriteLine("Enter the movie title:");
         string title = Console.ReadLine();
-        long movie_id = movieTheater.movieRepository.GetMovieByTitle(title);
+        long movie_id = movieTheaterComponents.movieRepository.GetMovieByTitle(title);
         if(movie_id == 0){throw new Exception($"No such film '{title}'!");}
         
         Console.WriteLine("Enter the day 'ex. : 05/05/2022' :");
         DateTime chosenDay = DateTime.Parse(Console.ReadLine());
         
-        List<Session> sessions = movieTheater.sessionRepository.GetMovieSessionsOnDay(movie_id, chosenDay);
+        List<Session> sessions = movieTheaterComponents.sessionRepository.GetMovieSessionsOnDay(movie_id, chosenDay);
         foreach (Session sn in sessions)
         {
             Console.WriteLine(sn);
@@ -115,9 +115,9 @@ public class Customer : User
         Console.WriteLine("Enter the number of session:");
         string session_id = Console.ReadLine();
 
-        Session session = movieTheater.sessionRepository.GetById(int.Parse(session_id));    
-        List<Ticket> tickets = movieTheater.ticketRepository.GetPlacesForSession(session);
-        MovieHall hall = movieTheater.movieHallRepository.GetById(session.hall_id);
+        Session session = movieTheaterComponents.sessionRepository.GetById(int.Parse(session_id));    
+        List<Ticket> tickets = movieTheaterComponents.ticketRepository.GetPlacesForSession(session);
+        MovieHall hall = movieTheaterComponents.movieHallRepository.GetById(session.hall_id);
         DisplayPlacesInMovieHall(session, tickets, hall);
         
         int row, place;
@@ -149,7 +149,7 @@ public class Customer : User
             startMovie = session.start,
             hallNumber = hall.hall_id 
         };
-        long ticket_id = movieTheater.ticketRepository.Insert(newTicket);
+        long ticket_id = movieTheaterComponents.ticketRepository.Insert(newTicket);
 
         TicketPurchase ticketPurchase = new TicketPurchase{
             ticket_id = ticket_id,
@@ -159,14 +159,26 @@ public class Customer : User
             payment_way = "credit card",
             isCanceled = false
         };
-        long purchase_id = movieTheater.ticketPurchaseRepository.Insert(ticketPurchase);
-        this.PayForTicketPurchase(ticketPurchase, movieTheater);
+        long purchase_id = movieTheaterComponents.ticketPurchaseRepository.Insert(ticketPurchase);
+        this.PayForTicketPurchase(ticketPurchase, movieTheaterComponents);
+
+        Console.WriteLine("Do you want to add a snack to your order: (Yes/No)");
+        string addSnack = Console.ReadLine();
+        if(addSnack == "Yes")
+        {
+            AddSnackToOrder(movieTheaterComponents);
+        }
     }
 
-    private void PayForTicketPurchase(TicketPurchase ticketPurchase, MovieTheater movieTheater)
+    private void AddSnackToOrder(MovieTheaterComponents movieTheaterComponents)
+    {
+        // TO DO
+    }
+
+    private void PayForTicketPurchase(TicketPurchase ticketPurchase, MovieTheaterComponents movieTheaterComponents)
     {
         this.CustomerState.PayForTicketPurchase(ticketPurchase);
-        movieTheater.userRepository.UpdateUserBalance(this.id, this.Balance += ticketPurchase.price);
+        movieTheaterComponents.userRepository.UpdateUserBalance(this.id, this.Balance += ticketPurchase.price);
         Console.WriteLine(" Balance on card = {0:C}", this.Balance);
         Console.WriteLine(" Status of card = {0}", this.CustomerState.GetType().Name);
     }
@@ -192,7 +204,7 @@ public class Customer : User
     }
 
     //+
-    public override void UpdateMyAccount(MovieTheater movieTheater)
+    public override void UpdateMyAccount(MovieTheaterComponents movieTheaterComponents)
     {
         if(this.isBlocked){throw new Exception("Your account has been blocked!");}
         Console.WriteLine("Enter new name :");
@@ -223,36 +235,36 @@ public class Customer : User
             Balance = this.Balance,
             CustomerState = this.CustomerState}; 
         
-        bool updated = movieTheater.userRepository.UpdateUserAccount(this.id, updateCustomer);
+        bool updated = movieTheaterComponents.userRepository.UpdateUserAccount(this.id, updateCustomer);
     }
 
     //+
-    public override void DeleteMyAccount(MovieTheater movieTheater)
+    public override void DeleteMyAccount(MovieTheaterComponents movieTheaterComponents)
     {
         if(this.isBlocked){throw new Exception("Your account has been blocked!");}
-        this.tickets = movieTheater.ticketRepository.GetUserTickets(this.id);
+        this.tickets = movieTheaterComponents.ticketRepository.GetUserTickets(this.id);
         if (tickets != null)
         {
             foreach (Ticket ticket in tickets)
             {
-                movieTheater.ticketRepository.DeleteById(ticket.id);
+                movieTheaterComponents.ticketRepository.DeleteById(ticket.id);
             }
         }
-        int result = movieTheater.userRepository.DeleteById(this.id);
+        int result = movieTheaterComponents.userRepository.DeleteById(this.id);
     }
 
     //+
-    public override void ShowMyAccount(MovieTheater movieTheater)
+    public override void ShowMyAccount(MovieTheaterComponents movieTheaterComponents)
     {
         if(this.isBlocked){throw new Exception("Your account has been blocked!");}
         Console.WriteLine(this);
     }
 
     //+
-    public override void ShowMyTickets(MovieTheater movieTheater)
+    public override void ShowMyTickets(MovieTheaterComponents movieTheaterComponents)
     {
         if(this.isBlocked){throw new Exception("Your account has been blocked!");}
-        List<Ticket> tickets = movieTheater.ticketRepository.GetCustomerTickets(this.id);
+        List<Ticket> tickets = movieTheaterComponents.ticketRepository.GetCustomerTickets(this.id);
         if (tickets != null)
         {
             foreach (Ticket ticket in tickets)

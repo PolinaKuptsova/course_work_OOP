@@ -6,8 +6,21 @@ namespace course_work_OOP
     {
         static void Main(string[] args)
         {
-            MovieTheater movieTheater = new MovieTheater();
+            /*MovieHallRepository assistantRepository = new MovieHallRepository(); ;
+            MovieHallRepository movieHallRepository;
+            UserRepository userRepository = new UserRepository();
+            MovieRepository movieRepository = new MovieRepository();
+            TicketRepository ticketRepository = new TicketRepository();
+            SessionRepository sessionRepository = new SessionRepository();
+            TicketPurchaseRepository ticketPurchaseRepository = new TicketPurchaseRepository();
+
+            MovieTheaterComponents components = new MovieTheaterComponents(assistantRepository = new MovieHallRepository(); ;
+            movieHallRepository; userRepository, movieRepository, ticketRepository, sessionRepository,
+            ticketPurchaseRepository);
+            
+            MovieTheater movieTheater = new MovieTheater(new Customer(), components);
             ConsoleApp.Run(movieTheater);
+            movieTheater.SetCommandInfo(); */
         }
     }
 }

@@ -46,12 +46,12 @@ public class UserRepository
         return users;
     }
 
-    public List<Customer> GetAllCustomers()
+    public List<Customer> GetAllByAccessLevel(string accessLevel)
     {
         List<Customer> users = new List<Customer>();
         SqliteCommand command = this.connection.CreateCommand();
         command.CommandText = @"SELECT * FROM users WHERE accessLevel = $accessLevel" ;
-        command.Parameters.AddWithValue("$accessLevel", "customer");   
+        command.Parameters.AddWithValue("$accessLevel", accessLevel);   
         SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {

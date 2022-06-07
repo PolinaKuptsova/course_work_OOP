@@ -7,13 +7,27 @@
 */
 
 
-public abstract class Decorator : MovieHall
+public abstract class Decorator : Room
 {
-    protected MovieHall hall;
+    protected Room room;
 
-    public void SetMovieHall(MovieHall hall)
+    public void SetRoom(Room room)
     {
-        this.hall = hall;
+        this.room = room;
+    }
+
+    public override void Show_Info()
+    {
+        if (room != null)
+        {
+            room.Show_Info();
+        }
+    }
+    public override void MakeSchedule(MovieTheaterComponents movieTheaterComponents)
+    {
+        if(room != null){
+            room.MakeSchedule(movieTheaterComponents);
+        }
     }
 
 }

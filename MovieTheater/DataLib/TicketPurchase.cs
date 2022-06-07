@@ -8,6 +8,7 @@ public class TicketPurchase
     public long customer_id;
     public string payment_way;
     public bool isCanceled;
+    public long barSet_id;
     public TicketPurchase()
     {
         this.id = 0;

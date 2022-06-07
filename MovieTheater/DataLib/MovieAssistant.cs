@@ -21,7 +21,7 @@ public class MovieAssistant : Customer
 
 
     // add sessions ??
-    public void AddMovie(MovieTheater movieTheater)
+    public void AddMovie(MovieTheaterComponents movieTheaterComponents)
     {
         Console.WriteLine("Enter movie title: ");
         string title = Console.ReadLine();
@@ -52,29 +52,29 @@ public class MovieAssistant : Customer
         };
     }
 
-    public void DeleteMovie(MovieTheater movieTheater)
+    public void DeleteMovie(MovieTheaterComponents movieTheaterComponents)
     {
         Console.WriteLine("Enter the movie title:");
         string title = Console.ReadLine();
-        long movie_id = movieTheater.movieRepository.GetMovieByTitle(title);
+        long movie_id = movieTheaterComponents.movieRepository.GetMovieByTitle(title);
         if (movie_id == 0) { throw new Exception($"No such film '{title}'!"); }
 
-        List<Session> sessions = movieTheater.sessionRepository.GetMovieSessions(movie_id);
+        List<Session> sessions = movieTheaterComponents.sessionRepository.GetMovieSessions(movie_id);
 
         foreach(Session sn in sessions){
-            int isDeletedSession = movieTheater.sessionRepository.DeleteById(sn.id);
+            int isDeletedSession = movieTheaterComponents.sessionRepository.DeleteById(sn.id);
         }
-        int isDeletedMovie = movieTheater.movieRepository.DeleteById(movie_id);
+        int isDeletedMovie = movieTheaterComponents.movieRepository.DeleteById(movie_id);
     }
 
-    public void CancelSession(MovieTheater movieTheater)
+    public void CancelSession(MovieTheaterComponents movieTheaterComponents)
     {
         Console.WriteLine("Enter the movie title:");
         string title = Console.ReadLine();
-        long movie_id = movieTheater.movieRepository.GetMovieByTitle(title);
+        long movie_id = movieTheaterComponents.movieRepository.GetMovieByTitle(title);
         if(movie_id == 0){throw new Exception($"No such film '{title}'!");}
 
-        List<Session> sessions = movieTheater.sessionRepository.GetMovieSessions(movie_id);
+        List<Session> sessions = movieTheaterComponents.sessionRepository.GetMovieSessions(movie_id);
         foreach (Session sn in sessions)
         {
             Console.WriteLine(sn);
@@ -82,17 +82,17 @@ public class MovieAssistant : Customer
         Console.WriteLine("Enter the number of session:");
         string session_id = Console.ReadLine();
 
-        Session session = movieTheater.sessionRepository.GetById(int.Parse(session_id));    
+        Session session = movieTheaterComponents.sessionRepository.GetById(int.Parse(session_id));    
         if(session == null){throw new Exception("Incorrect session number!");}
 
         Console.WriteLine($"If you want to cacncel session (#{session.id}) type 'true', in other way type 'false': ");
         string isCanceled = Console.ReadLine();
-        bool res = movieTheater.sessionRepository.CancelSession(session.id, bool.Parse(isCanceled));
+        bool res = movieTheaterComponents.sessionRepository.CancelSession(session.id, bool.Parse(isCanceled));
     }    
     
-    public void GetAllCustomers(MovieTheater movieTheater)
+    public void GetAllCustomers(MovieTheaterComponents movieTheaterComponents)
     {
-        List<Customer> customers = movieTheater.userRepository.GetAllCustomers();
+        List<Customer> customers = movieTheaterComponents.userRepository.GetAllByAccessLevel("customer");
         if(customers == null){throw new System.Exception ("No customers yet!");}
         foreach(Customer c in customers)
         {
@@ -100,9 +100,9 @@ public class MovieAssistant : Customer
         }
     }
 
-    public void GetAllMovies(MovieTheater movieTheater)
+    public void GetAllMovies(MovieTheaterComponents movieTheaterComponents)
     {
-        List<Movie> movies = movieTheater.movieRepository.GetAll();
+        List<Movie> movies = movieTheaterComponents.movieRepository.GetAll();
         if(movies == null){throw new System.Exception ("No movies yet!");}
         foreach(Movie m in movies)
         {
