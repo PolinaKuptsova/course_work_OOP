@@ -3,7 +3,8 @@ using System.Collections.Generic;
 
 public class MovieTheater : AbstrMovieTheater
 {
-    public override Customer User { 
+    public override Customer User 
+    { 
         get 
         {
             return this.User;
@@ -322,6 +323,11 @@ public class MovieTheater : AbstrMovieTheater
             if (this.User == null)
             {
                 this.User = MovieTheater.Registrate(this.movieTheaterComponents);
+                Console.WriteLine("You have been successfully registrated!\r\nDo you want to stay inform about premier? 'Yes/No'");   
+                string subscribe = Console.ReadLine();
+                if(subscribe == "Yes"){
+                    this.User.SubscribeForPremiereNotification(this.movieTheaterComponents);
+                }
                 ShowInfoForCustomer();
                 return;
             }

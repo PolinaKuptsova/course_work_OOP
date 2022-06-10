@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-public class Customer : User
+public class Customer : User, IObserver
 {
     public Customer(string phoneNumber, int age, string name, string password) : base(phoneNumber, age, name, password)
     {
@@ -161,6 +161,7 @@ public class Customer : User
         };
         long purchase_id = movieTheaterComponents.ticketPurchaseRepository.Insert(ticketPurchase);
         this.PayForTicketPurchase(ticketPurchase, movieTheaterComponents);
+        SubscribeForSessionCncelingNotification(movieTheaterComponents);
 
         Console.WriteLine("Do you want to add a snack to your order: (Yes/No)");
         string addSnack = Console.ReadLine();
@@ -275,4 +276,31 @@ public class Customer : User
         throw new Exception("No tickets yet!");
     }
 
+    public override void SubscribeForPremiereNotification(MovieTheaterComponents movieTheaterComponents)
+    {
+        List<Customer> users = movieTheaterComponents.userRepository.GetAllByAccessLevel("moderator");
+        MovieAssistant assist = new MovieAssistant();
+        assist = assist.SetMovieAssistant(users[0]);
+        assist.NotifyMovieAdding += SendPremiereNotification;
+    }
+
+    public override void SubscribeForSessionCncelingNotification(MovieTheaterComponents movieTheaterComponents)
+    {
+        List<Customer> users = movieTheaterComponents.userRepository.GetAllByAccessLevel("moderator");
+        MovieAssistant assist = new MovieAssistant();
+        assist = assist.SetMovieAssistant(users[0]);
+        assist.NotifySessionCanceling += SendCancelSessionNotification;
+    }
+
+
+    public void SendPremiereNotification(Movie newMovie)
+    {
+        Console.WriteLine("New movie on tour screen! Hurry up to buy a ticket" + newMovie);
+    
+    }
+
+    public void SendCancelSessionNotification(Session session)
+    {
+        throw new NotImplementedException();
+    }
 }

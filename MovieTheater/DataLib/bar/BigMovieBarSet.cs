@@ -9,5 +9,9 @@ public class BigMovieBarSet : MovieBarSet
     {
         throw new System.NotImplementedException();
     }
+        public override Glasses AddGlasses()
+    {
+        throw new System.NotImplementedException();
+    }
 }
 

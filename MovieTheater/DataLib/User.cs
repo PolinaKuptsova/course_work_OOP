@@ -39,6 +39,6 @@ public abstract class User
     public abstract double Balance { get; set; }
     public abstract string Password { get; set; }
     public abstract CustomerState CustomerState { get; set; }
-
-
+    public abstract void SubscribeForPremiereNotification(MovieTheaterComponents movieTheaterComponents);
+    public abstract void SubscribeForSessionCncelingNotification(MovieTheaterComponents movieTheaterComponents);
 }

@@ -4,6 +4,7 @@ public class BarOrder
     public long barSet_id;
     private Popcorn _popcorn;
     private Beverage _beverage;
+    private Glasses _glasses;
     private double price;
     public BarOrder(MovieBarSet movieBarSet)
     {

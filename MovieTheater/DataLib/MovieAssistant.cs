@@ -3,6 +3,10 @@ using System.Collections.Generic;
 
 public class MovieAssistant : Customer
 {
+    public delegate void CallbackMovieAdding(Movie movie);
+    public delegate void CallbackSessionCanceling(Session session);
+    public event CallbackMovieAdding NotifyMovieAdding;
+    public event CallbackSessionCanceling NotifySessionCanceling;
     public MovieAssistant(string phoneNumber, int age, string name, string password) : base(phoneNumber, age, name, password)
     {
     }
@@ -46,11 +50,14 @@ public class MovieAssistant : Customer
             director = director,
             duration = double.Parse(durationStr),
             premiere = DateTime.Parse(premiereStr),
-            lastDayOnScreen= DateTime.Parse(lastDayOnScreenStr),
-            description = description, 
+            lastDayOnScreen = DateTime.Parse(lastDayOnScreenStr),
+            description = description,
             ageRange = int.Parse(ageStr)
         };
+        
+        NotifyMovieAdding(newMovie);       
     }
+
 
     public void DeleteMovie(MovieTheaterComponents movieTheaterComponents)
     {
@@ -88,6 +95,7 @@ public class MovieAssistant : Customer
         Console.WriteLine($"If you want to cacncel session (#{session.id}) type 'true', in other way type 'false': ");
         string isCanceled = Console.ReadLine();
         bool res = movieTheaterComponents.sessionRepository.CancelSession(session.id, bool.Parse(isCanceled));
+        NotifySessionCanceling(session);
     }    
     
     public void GetAllCustomers(MovieTheaterComponents movieTheaterComponents)
