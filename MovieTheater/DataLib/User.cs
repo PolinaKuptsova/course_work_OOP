@@ -5,40 +5,102 @@ public abstract class User
 {
     public long id;
     private string name;
-    private string password;
-    private string phoneNumber;
+    string password;
+    string phoneNumber;
     public bool isBlocked;
     public int age;
     public string accessLevel;
-    private double balance; 
-    private CustomerState customerState; // to bd ???
-    public List<Ticket> tickets; 
+    double balance;
+    public List<Ticket> tickets;
 
     public User()
     {
     }
 
-    public User(string phoneNumber, int age, string name, string password)
+    public User(string name, string password, string phoneNumber, bool isBlocked, int age, string accessLevel, double balance)
     {
         Name = name;
         Password = password;
         PhoneNumber = phoneNumber;
-        this.isBlocked = false;
-        this.balance = 0.0;
+        this.isBlocked = isBlocked;
         this.age = age;
-        CustomerState = new BasicCustomerState(new Customer()); // ?? user to customer
+        this.accessLevel = accessLevel;
+        Balance = balance;
     }
 
     public abstract void ShowMyTickets(MovieTheaterComponents movieTheaterComponents);
-    public abstract void BuyTicket(MovieTheaterComponents movieTheaterComponents);
+    public abstract void ChooseTicket(MovieTheaterComponents movieTheaterComponents);
     public abstract void UpdateMyAccount(MovieTheaterComponents movieTheaterComponents);
     public abstract void DeleteMyAccount(MovieTheaterComponents movieTheaterComponents);
     public abstract void ShowMyAccount(MovieTheaterComponents movieTheaterComponents);
-    public abstract string Name { get; set;}
-    public abstract string PhoneNumber { get; set; }
-    public abstract double Balance { get; set; }
-    public abstract string Password { get; set; }
-    public abstract CustomerState CustomerState { get; set; }
+    public string Name
+    {
+        get
+        {
+            return Name;
+        }
+        set
+        {
+            if (!string.IsNullOrEmpty(value))
+            {
+                Name = value;
+            }
+            else
+            {
+                throw new Exception("Incorrect input of name. Please try again!");
+            }
+        }
+    }
+
+    public double Balance
+    {
+        get
+        {
+            return Balance;
+        }
+        set
+        {
+            Balance += value;
+        }
+    }
+
+    public string Password
+    {
+        get
+        {
+            return Password;
+        }
+        set
+        {
+            if (!string.IsNullOrEmpty(value))
+            {
+                Password = value;
+            }
+            else
+            {
+                throw new Exception("Incorrect input of password. Please try again!");
+            }
+        }
+    }
+    public string PhoneNumber
+    {
+        get
+        {
+            return PhoneNumber;
+        }
+        set
+        {
+            if (!string.IsNullOrEmpty(value))
+            {
+                PhoneNumber = value;
+            }
+            else
+            {
+                throw new Exception("Incorrect input of phone number. Please try again!");
+            }
+        }
+    }
+
     public abstract void SubscribeForPremiereNotification(MovieTheaterComponents movieTheaterComponents);
     public abstract void SubscribeForSessionCncelingNotification(MovieTheaterComponents movieTheaterComponents);
 }

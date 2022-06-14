@@ -49,9 +49,9 @@ public class MovieHallRepository
         }
         List<MovieHall> moviehalls = new List<MovieHall>();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"SELECT * FROM moviehalls LIMIT $pageSize OFFSET $pageSize * ($pageNumber - 1)";
-        command.Parameters.AddWithValue("$pageSize", pageSize);
-        command.Parameters.AddWithValue("$pageNumber", pageNumber);
+        command.CommandText = @"SELECT * FROM moviehalls LIMIT @pageSize OFFSET @pageSize * (@pageNumber - 1)";
+        command.Parameters.AddWithValue("@pageSize", pageSize);
+        command.Parameters.AddWithValue("@pageNumber", pageNumber);
         NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
@@ -65,11 +65,13 @@ public class MovieHallRepository
     public bool Update(long id, MovieHall moviehall)
     {
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"UPDATE moviehalls SET has_avalibleSeats = $has_avalibleSeats, 
-            typeOfScreen = $typeOfScreen,
-         WHERE hall_id = $hall_id";
-        command.Parameters.AddWithValue("$hall_id", id);
-        command.Parameters.AddWithValue("$typeOfScreen", moviehall.typeOfScreen);
+        command.CommandText = @"UPDATE moviehalls SET type_of_screen = @type_of_screen, row_amount = @row_amount,
+         places_in_row_amount = @places_in_row_amount
+         WHERE hall_id = @hall_id";
+        command.Parameters.AddWithValue("@hall_id", id);
+        command.Parameters.AddWithValue("@type_of_screen", moviehall.typeOfScreen);
+        command.Parameters.AddWithValue("@row_amount", moviehall.rowAmount);
+        command.Parameters.AddWithValue("@places_in_row_amount", moviehall.placesInRowAmount);
 
         int nChanged = command.ExecuteNonQuery();
         return nChanged == 1;
@@ -81,8 +83,8 @@ public class MovieHallRepository
     {
         MovieHall moviehall = new MovieHall();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"SELECT * FROM moviehalls WHERE hall_id = $hall_id";
-        command.Parameters.AddWithValue("$hall_id", id);
+        command.CommandText = @"SELECT * FROM moviehalls WHERE hall_id = @hall_id";
+        command.Parameters.AddWithValue("@hall_id", id);
         NpgsqlDataReader reader = command.ExecuteReader();
         if (reader.Read())
         {
@@ -100,8 +102,8 @@ public class MovieHallRepository
     {
         MovieHall moviehall = new MovieHall();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"DELETE FROM moviehalls WHERE hall_id = $hall_id";
-        command.Parameters.AddWithValue("$hall_id", id);
+        command.CommandText = @"DELETE FROM moviehalls WHERE hall_id = @hall_id";
+        command.Parameters.AddWithValue("@hall_id", id);
         int nChanged = command.ExecuteNonQuery();
         if (nChanged == 0)
         {
@@ -116,13 +118,15 @@ public class MovieHallRepository
     {
         NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText =
-        @"INSERT INTO moviehalls (typeOfScreen, has_avalibleSeats) 
-            VALUES ($typeOfScreen, $has_avalibleSeats);
+        @"INSERT INTO moviehalls (type_of_screen, row_amount, places_in_row_amount) 
+            VALUES (@type_of_screen, @row_amount, @places_in_row_amount);
             
             SELECT last_insert_rowid();
             ";
-        command.Parameters.AddWithValue("$hall_id", moviehall.hall_id);
-        command.Parameters.AddWithValue("$typeOfScreen", moviehall.typeOfScreen);
+        command.Parameters.AddWithValue("@hall_id", moviehall.hall_id);
+        command.Parameters.AddWithValue("@type_of_screen", moviehall.typeOfScreen);
+        command.Parameters.AddWithValue("@row_amount", moviehall.rowAmount);
+        command.Parameters.AddWithValue("@places_in_row_amount", moviehall.placesInRowAmount);
         long newId = (long)command.ExecuteScalar();
         if (newId == 0)
         {
@@ -140,6 +144,8 @@ public class MovieHallRepository
         MovieHall moviehall = new MovieHall();
         moviehall.hall_id = long.Parse(reader.GetString(0));
         moviehall.typeOfScreen = reader.GetString(1);
+        moviehall.rowAmount = int.Parse(reader.GetString(2));
+        moviehall.placesInRowAmount = int.Parse(reader.GetString(3));
 
         return moviehall;
     }

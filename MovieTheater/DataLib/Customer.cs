@@ -3,98 +3,27 @@ using System.Collections.Generic;
 
 public class Customer : User, IObserver
 {
-    public Customer(string phoneNumber, int age, string name, string password) : base(phoneNumber, age, name, password)
+    private CustomerState customerState; // to bd ???
+
+    public CustomerState CustomerState { get => customerState; set => customerState = value; }
+
+    public Customer(string name, string password, string phoneNumber, bool isBlocked, int age, string accessLevel, double balance) : base(name, password, phoneNumber, isBlocked, age, accessLevel, balance)
     {
     }
-
-    public Customer(string name, double balance, string password, string phoneNumber, CustomerState customerState)
-    {
-        Name = name;
-        Balance = balance;
-        Password = password;
-        PhoneNumber = phoneNumber;
-        CustomerState = customerState;
-    }
-
+    
     public Customer()
     {
+        this.isBlocked = false;
+        Balance = 0.0;
+        this.CustomerState = new BasicCustomerState(this); // ?? user to customer
     }
-
-    public override string Name
-    {
-        get
-        {
-            return Name;
-        }
-        set
-        {
-            if (!string.IsNullOrEmpty(value))
-            {
-                Name = value;
-            }
-            else
-            {
-                throw new Exception("Incorrect input of name. Please try again!");
-            }
-        }
-    }
-
-    public override double Balance
-    {
-        get
-        {
-            return Balance;
-        }
-        set
-        {
-            Balance += value;
-        }
-    }
-
-    public override string Password
-    {
-        get
-        {
-            return Password;
-        }
-        set
-        {
-            if (!string.IsNullOrEmpty(value))
-            {
-                Password = value;
-            }
-            else
-            {
-                throw new Exception("Incorrect input of password. Please try again!");
-            }
-        }
-    }
-    public override string PhoneNumber
-    {
-        get
-        {
-            return PhoneNumber;
-        }
-        set
-        {
-            if (!string.IsNullOrEmpty(value))
-            {
-                PhoneNumber = value;
-            }
-            else
-            {
-                throw new Exception("Incorrect input of phone number. Please try again!");
-            }
-        }
-    }
-    public override CustomerState CustomerState { get => CustomerState; set => CustomerState = value; }
 
     public override string ToString()
     {
         return string.Format($"Welcome, {Name}\r\nPhone number: {PhoneNumber}\r\nYour state: {CustomerState}\r\nAge: {age}");
     }
 
-    public override void BuyTicket(MovieTheaterComponents movieTheaterComponents)
+    public override void ChooseTicket(MovieTheaterComponents movieTheaterComponents)
     {
         if(this.isBlocked){throw new Exception("Your account has been blocked!");}
         string today_str = DateTime.Now.ToString("d");
@@ -149,38 +78,51 @@ public class Customer : User, IObserver
             startMovie = session.start,
             hallNumber = hall.hall_id 
         };
-        long ticket_id = movieTheaterComponents.ticketRepository.Insert(newTicket);
+        newTicket.id = movieTheaterComponents.ticketRepository.Insert(newTicket);
+        this.tickets.Add(newTicket);
+    }
 
-        TicketPurchase ticketPurchase = new TicketPurchase{
-            ticket_id = ticket_id,
-            createdAt = DateTime.Now,
-            price = 100,
-            customer_id = this.id,
-            payment_way = "credit card",
-            isCanceled = false
-        };
-        long purchase_id = movieTheaterComponents.ticketPurchaseRepository.Insert(ticketPurchase);
-        this.PayForTicketPurchase(ticketPurchase, movieTheaterComponents);
-        SubscribeForSessionCncelingNotification(movieTheaterComponents);
-
-        Console.WriteLine("Do you want to add a snack to your order: (Yes/No)");
-        string addSnack = Console.ReadLine();
-        if(addSnack == "Yes")
+    public double AddSnackToOrder(MovieTheaterComponents movieTheaterComponents)
+    {
+        BarCustomer bc = new BarCustomer();
+        MovieBarSet barSet = null;
+        Console.WriteLine("choose a set\r\nWe have : -small set\r\n-kid set\r\n-medium set\r\n-big set");
+        string set = Console.ReadLine();
+        if (set == "small set")
         {
-            AddSnackToOrder(movieTheaterComponents);
+            barSet = new SmallMovieBarSet();
+            bc.MakeOrder(barSet);
+            return barSet.Price;
+        }
+        else if (set == "kid set")
+        {
+            barSet = new KidMovieBarSet();
+            bc.MakeOrder(barSet);
+            return barSet.Price;
+        }
+        else if (set == "medium set")
+        {
+            barSet = new MediumMovieBarSet();
+            bc.MakeOrder(barSet);
+            return barSet.Price;
+        }
+        else if (set == "big set")
+        {
+            barSet = new BigMovieBarSet();
+            bc.MakeOrder(barSet);
+            return barSet.Price;
+        }
+        else
+        {
+            throw new Exception("No such bar set! try again");
         }
     }
 
-    private void AddSnackToOrder(MovieTheaterComponents movieTheaterComponents)
+    public void PayForPurchase(double price, MovieTheaterComponents movieTheaterComponents)
     {
-        // TO DO
-    }
-
-    private void PayForTicketPurchase(TicketPurchase ticketPurchase, MovieTheaterComponents movieTheaterComponents)
-    {
-        this.CustomerState.PayForTicketPurchase(ticketPurchase);
-        movieTheaterComponents.userRepository.UpdateUserBalance(this.id, this.Balance += ticketPurchase.price);
-        Console.WriteLine(" Balance on card = {0:C}", this.Balance);
+        this.CustomerState.PayForPurchase(price);
+        movieTheaterComponents.userRepository.UpdateUserBalance(this.id, this.Balance += price);
+        Console.WriteLine(" Balance = {0:C}", this.Balance);
         Console.WriteLine(" Status of card = {0}", this.CustomerState.GetType().Name);
     }
 
@@ -296,11 +238,10 @@ public class Customer : User, IObserver
     public void SendPremiereNotification(Movie newMovie)
     {
         Console.WriteLine("New movie on tour screen! Hurry up to buy a ticket" + newMovie);
-    
     }
 
     public void SendCancelSessionNotification(Session session)
     {
-        throw new NotImplementedException();
+        Console.WriteLine($"We are sorry to inform, but the  session \r\n{session}\r\n was canceled. The money will go to charity!");
     }
 }

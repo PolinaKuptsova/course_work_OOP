@@ -21,21 +21,26 @@ admin -     BlockUser
 */
 public static class ConsoleApp{
 
-    public static void Run(MovieTheater movieTheater)
+    public static void Run(AbstrMovieTheater processControl)
     {
+
         while (true)
         {
+            bool found = false;
             Console.WriteLine("Enter command: ");
-            string command = Console.ReadLine();
-            for (int i = 0; i < movieTheater.allCommands.Length; i++)
+            string command = "registrate";
+            for (int i = 0; i < processControl.allCommands.Length; i++)
             {
-                if (command == movieTheater.allCommands[i])
+                if (command == processControl.allCommands[i])
                 {
-                    movieTheater.allProcesses[i].Invoke();
+                    found = true;
+                    processControl.allProcesses[i].Invoke();
+                    break;
                 }
-                else{
-                    Console.WriteLine("Incorrect command. Try again!");
-                }
+            }
+            if (found == false)
+            {
+                Console.WriteLine("Incorrect command. Try again!");
             }
         }
     }

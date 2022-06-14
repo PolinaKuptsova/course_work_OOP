@@ -49,9 +49,9 @@ public class TicketPurchaseRepository
         }
         List<TicketPurchase> ticketPurchases = new List<TicketPurchase>();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"SELECT * FROM ticketpurchases LIMIT $pageSize OFFSET $pageSize * ($pageNumber - 1)";
-        command.Parameters.AddWithValue("$pageSize", pageSize);
-        command.Parameters.AddWithValue("$pageNumber", pageNumber);
+        command.CommandText = @"SELECT * FROM ticketpurchases LIMIT @pageSize OFFSET @pageSize * (@pageNumber - 1)";
+        command.Parameters.AddWithValue("@pageSize", pageSize);
+        command.Parameters.AddWithValue("@pageNumber", pageNumber);
         NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
@@ -65,10 +65,10 @@ public class TicketPurchaseRepository
     public bool Update(long id, bool isCanceled)
     {
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"UPDATE ticketpurchases SET isCanceled = $isCanceled, 
-             WHERE ticket_id = $ticket_id";
-        command.Parameters.AddWithValue("$ticket_id", id);
-        command.Parameters.AddWithValue("$isCanceled", isCanceled);
+        command.CommandText = @"UPDATE ticketpurchases SET isCanceled = @isCanceled, 
+             WHERE ticket_id = @ticket_id";
+        command.Parameters.AddWithValue("@ticket_id", id);
+        command.Parameters.AddWithValue("@isCanceled", isCanceled);
 
         int nChanged = command.ExecuteNonQuery();
         return nChanged == 1;
@@ -80,8 +80,8 @@ public class TicketPurchaseRepository
     {
         TicketPurchase ticketPurchase = new TicketPurchase();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"SELECT * FROM ticketpurchases WHERE id = $id";
-        command.Parameters.AddWithValue("$id", id);
+        command.CommandText = @"SELECT * FROM ticketpurchases WHERE id = @id";
+        command.Parameters.AddWithValue("@id", id);
         NpgsqlDataReader reader = command.ExecuteReader();
         if (reader.Read())
         {
@@ -99,8 +99,8 @@ public class TicketPurchaseRepository
     {
         TicketPurchase ticketPurchase = new TicketPurchase();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"DELETE FROM ticketpurchases WHERE hall_id = $hall_id";
-        command.Parameters.AddWithValue("$hall_id", id);
+        command.CommandText = @"DELETE FROM ticketpurchases WHERE hall_id = @hall_id";
+        command.Parameters.AddWithValue("@hall_id", id);
         int nChanged = command.ExecuteNonQuery();
         if (nChanged == 0)
         {
@@ -116,17 +116,17 @@ public class TicketPurchaseRepository
     {
         NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText =
-        @"INSERT INTO ticketPurchases (ticket_id, createdAt, price, customer_id, payment_way, isCanceled) 
-            VALUES ($ticket_id, $createdAt, $price, $customer_id, $payment_way, $isCanceled);
+        @"INSERT INTO ticketPurchases (ticket_id, createdAt, price, customer_id, payment_way, is_canceled) 
+            VALUES (@ticket_id, @createdAt, @price, @customer_id, @payment_way, @is_canceled);
             
             SELECT last_insert_rowid();
             ";
-        command.Parameters.AddWithValue("$ticket_id", ticketPurchase.ticket_id);
-        command.Parameters.AddWithValue("$createdAt", ticketPurchase.createdAt);
-        command.Parameters.AddWithValue("$price", ticketPurchase.price);
-        command.Parameters.AddWithValue("$customer_id", ticketPurchase.customer_id);
-        command.Parameters.AddWithValue("$payment_way", ticketPurchase.payment_way);
-        command.Parameters.AddWithValue("$isCanceled", ticketPurchase.isCanceled);
+        command.Parameters.AddWithValue("@ticket_id", ticketPurchase.ticket_id);
+        command.Parameters.AddWithValue("@createdAt", ticketPurchase.createdAt);
+        command.Parameters.AddWithValue("@price", ticketPurchase.price);
+        command.Parameters.AddWithValue("@customer_id", ticketPurchase.customer_id);
+        command.Parameters.AddWithValue("@payment_way", ticketPurchase.payment_way);
+        command.Parameters.AddWithValue("@is_canceled", ticketPurchase.isCanceled);
         long newId = (long)command.ExecuteScalar();
         if (newId == 0)
         {

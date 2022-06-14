@@ -50,8 +50,8 @@ public class UserRepository
     {
         List<Customer> users = new List<Customer>();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"SELECT * FROM users WHERE accessLevel = $accessLevel" ;
-        command.Parameters.AddWithValue("$accessLevel", accessLevel);   
+        command.CommandText = @"SELECT * FROM users WHERE access_level = @access_level" ;
+        command.Parameters.AddWithValue("@access_level", accessLevel);   
         NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
@@ -69,9 +69,9 @@ public class UserRepository
         }
         List<Customer> users = new List<Customer>();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"SELECT * FROM users LIMIT $pageSize OFFSET $pageSize * ($pageNumber - 1)";
-        command.Parameters.AddWithValue("$pageSize", pageSize);
-        command.Parameters.AddWithValue("$pageNumber", pageNumber);
+        command.CommandText = @"SELECT * FROM users LIMIT @pageSize OFFSET @pageSize * (@pageNumber - 1)";
+        command.Parameters.AddWithValue("@pageSize", pageSize);
+        command.Parameters.AddWithValue("@pageNumber", pageNumber);
         NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
@@ -85,13 +85,13 @@ public class UserRepository
     public bool UpdateUserAccount(long id, Customer user)
     {
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"UPDATE users SET name = $name, password = $password,
-        phoneNumber = $phoneNumber, age = $age WHERE id = $id";
-        command.Parameters.AddWithValue("$id", id);
-        command.Parameters.AddWithValue("$name", user.Name);
-        command.Parameters.AddWithValue("$password", user.Password);
-        command.Parameters.AddWithValue("$phoneNumber", user.PhoneNumber);
-        command.Parameters.AddWithValue("$age", user.age);
+        command.CommandText = @"UPDATE users SET name = @name, password = @password,
+        phoneNumber = @phoneNumber, age = @age WHERE id = @id";
+        command.Parameters.AddWithValue("@id", id);
+        command.Parameters.AddWithValue("@name", user.Name);
+        command.Parameters.AddWithValue("@password", user.Password);
+        command.Parameters.AddWithValue("@phoneNumber", user.PhoneNumber);
+        command.Parameters.AddWithValue("@age", user.age);
 
         int nChanged = command.ExecuteNonQuery();
         return nChanged == 1;
@@ -101,8 +101,8 @@ public class UserRepository
     public bool UpdateUserBalance(long id, double newBalance)
     {
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"UPDATE users SET balance = $balance WHERE id = $id";
-        command.Parameters.AddWithValue("$id", id);
+        command.CommandText = @"UPDATE users SET balance = @balance WHERE id = @id";
+        command.Parameters.AddWithValue("@id", id);
         command.Parameters.AddWithValue("balance", newBalance);
 
         int nChanged = command.ExecuteNonQuery();
@@ -112,9 +112,9 @@ public class UserRepository
     public bool UpdateUserStatus(long id, bool isBlocked)
     {
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"UPDATE users SET isBlockes = $isBlocked WHERE id = $id";
-        command.Parameters.AddWithValue("$id", id);
-        command.Parameters.AddWithValue("isBlocked", isBlocked);
+        command.CommandText = @"UPDATE users SET is_blockes = @is_blocked WHERE id = @id";
+        command.Parameters.AddWithValue("@id", id);
+        command.Parameters.AddWithValue("is_blocked", isBlocked);
 
         int nChanged = command.ExecuteNonQuery();
         return nChanged == 1;
@@ -123,9 +123,9 @@ public class UserRepository
     public bool UpdateUserAccessLevel(long id, string accessLevel)
     {
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"UPDATE users SET accessLevel = $accessLevel WHERE id = $id";
-        command.Parameters.AddWithValue("$id", id);
-        command.Parameters.AddWithValue("accessLevel", accessLevel);
+        command.CommandText = @"UPDATE users SET access_level = @access_level WHERE id = @id";
+        command.Parameters.AddWithValue("@id", id);
+        command.Parameters.AddWithValue("access_level", accessLevel);
 
         int nChanged = command.ExecuteNonQuery();
         return nChanged == 1;
@@ -134,8 +134,8 @@ public class UserRepository
     public bool UpdateUserAge(long id, Customer user)
     {
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"UPDATE users SET age = $age WHERE id = $id";
-        command.Parameters.AddWithValue("$id", id);
+        command.CommandText = @"UPDATE users SET age = @age WHERE id = @id";
+        command.Parameters.AddWithValue("@id", id);
         command.Parameters.AddWithValue("age", user.age);
 
         int nChanged = command.ExecuteNonQuery();
@@ -146,8 +146,8 @@ public class UserRepository
     {
         Customer user = new Customer();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"SELECT * FROM users WHERE id = $id";
-        command.Parameters.AddWithValue("$id", id);
+        command.CommandText = @"SELECT * FROM users WHERE id = @id";
+        command.Parameters.AddWithValue("@id", id);
         NpgsqlDataReader reader = command.ExecuteReader();
         if (reader.Read())
         {
@@ -165,8 +165,8 @@ public class UserRepository
     {
         Customer user = new Customer();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"DELETE FROM users WHERE id = $id";
-        command.Parameters.AddWithValue("$id", id);
+        command.CommandText = @"DELETE FROM users WHERE id = @id";
+        command.Parameters.AddWithValue("@id", id);
         int nChanged = command.ExecuteNonQuery();
         if (nChanged == 0)
         {
@@ -181,19 +181,18 @@ public class UserRepository
     {
         NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText =
-        @"INSERT INTO users (name, password, phoneNumber, age, isBlocked, accessLevel, balance) 
-            VALUES ($name, $password, $phoneNumber, $age, $isBlocked, $accessLevel, $balance);
+        @"INSERT INTO users (name, password, phone_number, is_blocked, age, access_level, balance) 
+            VALUES (@name, @password, @phone_number, @is_blocked, @age, @access_level, @balance);
             
-            SELECT last_insert_rowid();
-            ";
+            SELECT currval('id');";
         string hash = Authentication.GetHash(user.Password);
-        command.Parameters.AddWithValue("$name", user.Name);
-        command.Parameters.AddWithValue("$password", hash);
-        command.Parameters.AddWithValue("$phoneNumber", user.PhoneNumber);
-        command.Parameters.AddWithValue("$age", user.age);
-        command.Parameters.AddWithValue("$isBlocked", user.isBlocked);
-        command.Parameters.AddWithValue("$accessLevel", user.accessLevel);
-        command.Parameters.AddWithValue("$balance", user.Balance);
+        command.Parameters.AddWithValue("@name", user.Name);
+        command.Parameters.AddWithValue("@password", hash);
+        command.Parameters.AddWithValue("@phone_number", user.PhoneNumber);
+        command.Parameters.AddWithValue("@is_blocked", user.isBlocked == false ? 0 : 1);
+        command.Parameters.AddWithValue("@age", user.age);
+        command.Parameters.AddWithValue("@access_level", user.accessLevel);
+        command.Parameters.AddWithValue("@balance", user.Balance);
         
         long newId = (long)command.ExecuteScalar();
         if (newId == 0)
@@ -214,11 +213,13 @@ public class UserRepository
         user.Name = reader.GetString(1);
         user.Password = reader.GetString(2);
         user.PhoneNumber = reader.GetString(3);
-        user.age = int.Parse(reader.GetString(4));
-        user.isBlocked = reader.GetString(5) == "0" ? false : true;
+        user.age = int.Parse(reader.GetString(5));
+        user.isBlocked = reader.GetString(4) == "0" ? false : true;
         user.accessLevel = reader.GetString(6);
         user.Balance = double.Parse(reader.GetString(7));
 
         return user;
     }
 }
+// 0 - false 
+// 1 - true

@@ -1,34 +1,27 @@
 abstract public class CustomerState
 {
-    protected Customer customer;
-    protected double balance;
-    protected double discount;
-    protected double upperLimit;
+    private Customer customer;
+    private StateFeatures stateFeatures;
+    public StateFeaturesRepository stateFeaturesRepository;
 
-    protected CustomerState()
+    public CustomerState()
     {
     }
 
     public CustomerState(Customer customer)
     {
-        this.balance = customer.Balance;
         this.Customer = customer;
     }
-    protected CustomerState(Customer customer, double discount, double upperLimit)
+
+
+    public CustomerState(Customer customer, StateFeatures stateFeatures)
     {
         this.Customer = customer;
-        this.Balance = customer.Balance;
-        this.discount = discount;
-        this.upperLimit = upperLimit;
+        this.StateFeatures = stateFeatures;
     }
 
     // Properties
 
-    public double Balance
-    {
-        get { return balance; }
-        set { balance = value; }
-    }
 
     public Customer Customer
     {
@@ -36,6 +29,9 @@ abstract public class CustomerState
         set { Customer = value; }
     }
 
-    public abstract void PayForTicketPurchase(TicketPurchase ticketPurchase);
+    public StateFeatures StateFeatures 
+    { get => stateFeatures; set => stateFeatures = value; }
+
+    public abstract void PayForPurchase(double price);
 
 }

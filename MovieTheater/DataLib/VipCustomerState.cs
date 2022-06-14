@@ -3,26 +3,23 @@ public class VipCustomerState : CustomerState
 {
     public VipCustomerState(CustomerState state)
     {
-        this.balance = state.Balance;
-        this.customer = state.Customer;
+        this.Customer = state.Customer;
         Initialize();
     }
 
     private void Initialize()
     {
-        // Should come from a datasource   ???
-        discount = 0.15;
-        upperLimit = 100000;
+        StateFeatures = stateFeaturesRepository.GetStateFeatures("vip");  
     }
 
-    public override void PayForTicketPurchase(TicketPurchase ticketPurchase)
+    public override void PayForPurchase(double price)
     {
-        double price = CalcCheck(ticketPurchase.price);        
-        balance += price;
+        double newPrice = CalcCheck(price);        
+        this.Customer.Balance += newPrice;
     }
 
     private double CalcCheck(double price)
     {
-        return (1 - discount) * price;
+        return (1 - StateFeatures.Discount) * price;
     }
 }

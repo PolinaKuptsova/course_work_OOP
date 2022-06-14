@@ -49,9 +49,9 @@ public class SessionRepository
         }
         List<Session> Sessions = new List<Session>();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"SELECT * FROM Sessions LIMIT $pageSize OFFSET $pageSize * ($pageNumber - 1)";
-        command.Parameters.AddWithValue("$pageSize", pageSize);
-        command.Parameters.AddWithValue("$pageNumber", pageNumber);
+        command.CommandText = @"SELECT * FROM Sessions LIMIT @pageSize OFFSET @pageSize * (@pageNumber - 1)";
+        command.Parameters.AddWithValue("@pageSize", pageSize);
+        command.Parameters.AddWithValue("@pageNumber", pageNumber);
         NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
@@ -65,11 +65,11 @@ public class SessionRepository
     public bool Update(long id, Session Session)
     {
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"UPDATE Sessions SET has_avalibleSeats = $has_avalibleSeats, 
-            typeOfScreen = $typeOfScreen,
-         WHERE id = $id";
-        command.Parameters.AddWithValue("$id", id);
-        command.Parameters.AddWithValue("$has_avalibleSeats", Session.has_avalibleSeats == false ? 1 : 0);
+        command.CommandText = @"UPDATE Sessions SET has_avalibleseats = @has_avalibleseats, 
+            type_of_screen = @type_of_screen,
+         WHERE id = @id";
+        command.Parameters.AddWithValue("@id", id);
+        command.Parameters.AddWithValue("@has_avalibleseats", Session.has_avalibleSeats == false ? 1 : 0);
 
         int nChanged = command.ExecuteNonQuery();
         return nChanged == 1;
@@ -78,10 +78,10 @@ public class SessionRepository
     public bool CancelSession(long id, bool isCanceled)
     {
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"UPDATE Sessions SET isCanaceled = $isCanceled,
-         WHERE id = $id";
-        command.Parameters.AddWithValue("$id", id);
-        command.Parameters.AddWithValue("$isCanceled", isCanceled);
+        command.CommandText = @"UPDATE Sessions SET is_canaceled = @is_canceled,
+         WHERE id = @id";
+        command.Parameters.AddWithValue("@id", id);
+        command.Parameters.AddWithValue("@is_canceled", isCanceled);
 
         int nChanged = command.ExecuteNonQuery();
         return nChanged == 1;
@@ -92,8 +92,8 @@ public class SessionRepository
     {
         Session Session = new Session();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"SELECT * FROM Sessions WHERE id = $id";
-        command.Parameters.AddWithValue("$id", id);
+        command.CommandText = @"SELECT * FROM Sessions WHERE id = @id";
+        command.Parameters.AddWithValue("@id", id);
         NpgsqlDataReader reader = command.ExecuteReader();
         if (reader.Read())
         {
@@ -111,8 +111,8 @@ public class SessionRepository
     {
         List<Session> sessions = new List<Session>();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"SELECT * FROM sessions WHERE movie_id = $movie_id";
-        command.Parameters.AddWithValue("$movie_id", movie_id);
+        command.CommandText = @"SELECT * FROM sessions WHERE movie_id = @movie_id";
+        command.Parameters.AddWithValue("@movie_id", movie_id);
         NpgsqlDataReader reader  = command.ExecuteReader();
         while (reader.Read())
         {
@@ -126,8 +126,8 @@ public class SessionRepository
     {
         Session Session = new Session();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"DELETE FROM Sessions WHERE id = $id";
-        command.Parameters.AddWithValue("$id", id);
+        command.CommandText = @"DELETE FROM Sessions WHERE id = @id";
+        command.Parameters.AddWithValue("@id", id);
         int nChanged = command.ExecuteNonQuery();
         if (nChanged == 0)
         {
@@ -142,16 +142,16 @@ public class SessionRepository
     {
         NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText =
-        @"INSERT INTO Sessions (movie_id, hall_id, start, end, has_avalibleSeats) 
-            VALUES ($movie_id, $hall_id, $start, $end, $has_avalibleSeats);
+        @"INSERT INTO Sessions (movie_id, hall_id, start, end, has_avalibleseats, is_canceled) 
+            VALUES (@movie_id, @hall_id, @start, @end, @has_avalibleseats, @is_canceled);
             
             SELECT last_insert_rowid();
             ";
-        command.Parameters.AddWithValue("$hall_id", Session.hall_id);
-        command.Parameters.AddWithValue("$movie_id", Session.movie_id);
-        command.Parameters.AddWithValue("$start", Session.start.ToString("0"));
-        command.Parameters.AddWithValue("$end", Session.end.ToString("0"));
-        command.Parameters.AddWithValue("$has_avalibleSeats", Session.has_avalibleSeats == false ? 1 : 0);
+        command.Parameters.AddWithValue("@hall_id", Session.hall_id);
+        command.Parameters.AddWithValue("@movie_id", Session.movie_id);
+        command.Parameters.AddWithValue("@start", Session.start.ToString("0"));
+        command.Parameters.AddWithValue("@end", Session.end.ToString("0"));
+        command.Parameters.AddWithValue("@has_avalibleseats", Session.has_avalibleSeats == false ? 1 : 0);
         long newId = (long)command.ExecuteScalar();
         if (newId == 0)
         {
@@ -169,11 +169,12 @@ public class SessionRepository
     {
         Session Session = new Session();
         Session.id = long.Parse(reader.GetString(0));
-        Session.hall_id = long.Parse(reader.GetString(1));
-        Session.movie_id = long.Parse(reader.GetString(2));
-        Session.start = DateTime.Parse(reader.GetString(1));
-        Session.end = DateTime.Parse(reader.GetString(2));
+        Session.hall_id = long.Parse(reader.GetString(2));
+        Session.movie_id = long.Parse(reader.GetString(1));
+        Session.start = DateTime.Parse(reader.GetString(3));
+        Session.end = DateTime.Parse(reader.GetString(4));
         Session.has_avalibleSeats = reader.GetString(5) == "1" ? false : true;
+        Session.is_canceled = reader.GetString(6) == "1" ? false : true;
 
         return Session;
     }
@@ -182,8 +183,8 @@ public class SessionRepository
     {
         Session session = new Session();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"Select FROM sessions WHERE start = $movieTime";
-        command.Parameters.AddWithValue("$movieTime", movieTime);
+        command.CommandText = @"Select FROM sessions WHERE start = @movie_time";
+        command.Parameters.AddWithValue("@movie_time", movieTime);
         NpgsqlDataReader reader  = command.ExecuteReader();
         if (reader.Read())
         {
@@ -202,10 +203,10 @@ public class SessionRepository
     {
         List<Session> sessions = new List<Session>();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"SELECT * FROM sessions WHERE movie_id = $movie_id 
-            AND start = $chosenDay";
-        command.Parameters.AddWithValue("$movie_id", movie_id);
-        command.Parameters.AddWithValue("$chosenDay", chosenDay);
+        command.CommandText = @"SELECT * FROM sessions WHERE movie_id = @movie_id 
+            AND start = @chosenDay";
+        command.Parameters.AddWithValue("@movie_id", movie_id);
+        command.Parameters.AddWithValue("@chosenDay", chosenDay);
         NpgsqlDataReader reader  = command.ExecuteReader();
         while (reader.Read())
         {

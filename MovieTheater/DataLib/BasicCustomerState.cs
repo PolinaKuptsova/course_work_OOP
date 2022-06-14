@@ -4,42 +4,41 @@ public class BasicCustomerState : CustomerState
     // Constructor
     public BasicCustomerState(Customer customer) : base(customer)
     {
-        this.balance = customer.Balance;
-        this.customer = customer;
+        this.Customer = customer;
         Initialize();
     }
 
     public BasicCustomerState(CustomerState state)
     {
-        this.balance = state.Balance;
-        this.customer = state.Customer;
+        this.Customer = state.Customer;
         Initialize();
+    }
+
+    public BasicCustomerState()
+    {
     }
 
     private void Initialize()
     {
-        // Should come from a datasource ???
-        discount = 0.05;
-        upperLimit = 10000;
+        StateFeatures = stateFeaturesRepository.GetStateFeatures("basic");  
     }
 
     private void StateChangePrice()
     {
-        if (balance > upperLimit)
+        if (Customer.Balance > StateFeatures.UpperLimit)
         {
-            customer.CustomerState = new VipCustomerState(this);
+            Customer.CustomerState = new VipCustomerState(this);
         }
     }
-
-    public override void PayForTicketPurchase(TicketPurchase ticketPurchase)
+    public override void PayForPurchase(double price)
     {
-        double price = CalcPrice(ticketPurchase.price);
-        balance += price;
+        double newPrice = CalcCheck(price);
+        this.Customer.Balance += newPrice;
         StateChangePrice();
     }
 
-    private double CalcPrice(double price)
+    private double CalcCheck(double price)
     {
-        return (1 - discount) * price;
+        return (1 - StateFeatures.Discount) * price;
     }
 }

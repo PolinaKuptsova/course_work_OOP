@@ -1,9 +1,6 @@
 using System;
 public sealed class Admin : MovieAssistant
 {
-    public Admin(string phoneNumber, int age, string name, string password) : base(phoneNumber, age, name, password)
-    {
-    }
 
     public Admin()
     {

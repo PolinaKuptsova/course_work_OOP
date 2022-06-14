@@ -7,10 +7,6 @@ public class MovieAssistant : Customer
     public delegate void CallbackSessionCanceling(Session session);
     public event CallbackMovieAdding NotifyMovieAdding;
     public event CallbackSessionCanceling NotifySessionCanceling;
-    public MovieAssistant(string phoneNumber, int age, string name, string password) : base(phoneNumber, age, name, password)
-    {
-    }
-
     public MovieAssistant()
     {
         

@@ -50,9 +50,9 @@ public class MovieRepository
         }
         List<Movie> movies = new List<Movie>();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"SELECT * FROM movies LIMIT $pageSize OFFSET $pageSize * ($pageNumber - 1)";
-        command.Parameters.AddWithValue("$pageSize", pageSize);
-        command.Parameters.AddWithValue("$pageNumber", pageNumber);
+        command.CommandText = @"SELECT * FROM movies LIMIT @pageSize OFFSET @pageSize * (@pageNumber - 1)";
+        command.Parameters.AddWithValue("@pageSize", pageSize);
+        command.Parameters.AddWithValue("@pageNumber", pageNumber);
         NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
@@ -66,19 +66,19 @@ public class MovieRepository
     public bool Update(long id, Movie movie)
     {
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"UPDATE movies SET title = $title, genre = $genre, director = $director, 
-        duration = $duration, premiere = $premiere, lastDayOnScreen = $lastDayOnScreen, description = $description,
-        ageRange = $ageRange
-         WHERE id = $id";
-        command.Parameters.AddWithValue("$id", id);
-        command.Parameters.AddWithValue("$title", movie.title);
-        command.Parameters.AddWithValue("$genre", movie.genre);
-        command.Parameters.AddWithValue("$director", movie.director);
-        command.Parameters.AddWithValue("$duration", movie.duration);
-        command.Parameters.AddWithValue("$premeire", movie.premiere.ToString("0"));
-        command.Parameters.AddWithValue("$lastDayOnScreen", movie.lastDayOnScreen.ToString("0"));
-        command.Parameters.AddWithValue("$description", movie.description);
-        command.Parameters.AddWithValue("$ageRange", movie.ageRange);
+        command.CommandText = @"UPDATE movies SET title = @title, genre = @genre, director = @director, 
+        duration = @duration, premiere = @premiere, last_day_on_screen = @last_day_on_screen, description = @description,
+        age_range = @age_range
+         WHERE id = @id";
+        command.Parameters.AddWithValue("@id", id);
+        command.Parameters.AddWithValue("@title", movie.title);
+        command.Parameters.AddWithValue("@genre", movie.genre);
+        command.Parameters.AddWithValue("@director", movie.director);
+        command.Parameters.AddWithValue("@duration", movie.duration);
+        command.Parameters.AddWithValue("@premeire", movie.premiere);
+        command.Parameters.AddWithValue("@last_day_on_screen", movie.lastDayOnScreen);
+        command.Parameters.AddWithValue("@description", movie.description);
+        command.Parameters.AddWithValue("@age_range", movie.ageRange);
 
         int nChanged = command.ExecuteNonQuery();
         return nChanged == 1;
@@ -89,8 +89,8 @@ public class MovieRepository
     {
         Movie Movie = new Movie();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"SELECT * FROM movies WHERE id = $id";
-        command.Parameters.AddWithValue("$id", id);
+        command.CommandText = @"SELECT * FROM movies WHERE id = @id";
+        command.Parameters.AddWithValue("@id", id);
         NpgsqlDataReader reader = command.ExecuteReader();
         if (reader.Read())
         {
@@ -108,8 +108,8 @@ public class MovieRepository
     {
         Movie movie = new Movie();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"SELECT * FROM movies WHERE title = $title";
-        command.Parameters.AddWithValue("$title", title);
+        command.CommandText = @"SELECT * FROM movies WHERE title = @title";
+        command.Parameters.AddWithValue("@title", title);
         NpgsqlDataReader reader = command.ExecuteReader();
         if (reader.Read())
         {
@@ -126,8 +126,8 @@ public class MovieRepository
     {
         Movie Movie = new Movie();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"DELETE FROM movies WHERE id = $id";
-        command.Parameters.AddWithValue("$id", id);
+        command.CommandText = @"DELETE FROM movies WHERE id = @id";
+        command.Parameters.AddWithValue("@id", id);
         int nChanged = command.ExecuteNonQuery();
         if (nChanged == 0)
         {
@@ -143,20 +143,20 @@ public class MovieRepository
         NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText =
         @"INSERT INTO movies (title, genre, director, duration, 
-            premiere, lastDayOnScreen, description, ageRange) 
-            VALUES ($title, $genre, $director, $duration, 
-            $premiere, $lastDayOnScreen, $description, $ageRange);
+            premiere, last_day_on_screen, description, ageRange) 
+            VALUES (@title, @genre, @director, @duration, 
+            @premiere, @last_day_on_screen, @description, @age_range);
             
             SELECT last_insert_rowid();
             ";
-        command.Parameters.AddWithValue("$title", movie.title);
-        command.Parameters.AddWithValue("$genre", movie.genre);
-        command.Parameters.AddWithValue("$director", movie.director);
-        command.Parameters.AddWithValue("$duration", movie.duration);
-        command.Parameters.AddWithValue("$premeire", movie.premiere.ToString("0"));
-        command.Parameters.AddWithValue("$lastDayOnScreen", movie.lastDayOnScreen.ToString("0"));
-        command.Parameters.AddWithValue("$description", movie.description);
-        command.Parameters.AddWithValue("$ageRange", movie.ageRange);
+        command.Parameters.AddWithValue("@title", movie.title);
+        command.Parameters.AddWithValue("@genre", movie.genre);
+        command.Parameters.AddWithValue("@director", movie.director);
+        command.Parameters.AddWithValue("@duration", movie.duration);
+        command.Parameters.AddWithValue("@premeire", movie.premiere);
+        command.Parameters.AddWithValue("@last_day_on_screen", movie.lastDayOnScreen);
+        command.Parameters.AddWithValue("@description", movie.description);
+        command.Parameters.AddWithValue("@age_range", movie.ageRange);
 
         long newId = (long)command.ExecuteScalar();
         if (newId == 0)
@@ -174,8 +174,8 @@ public class MovieRepository
     {
         List<Movie> movies = new List<Movie>();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"SELECT * FROM movies WHERE $day BETWEEN $premiere AND $lastDayOnScreen";
-        command.Parameters.AddWithValue("$day", DateTime.Now);
+        command.CommandText = @"SELECT * FROM movies WHERE @day BETWEEN @premiere AND @last_day_on_screen";
+        command.Parameters.AddWithValue("@day", DateTime.Now);
         NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {

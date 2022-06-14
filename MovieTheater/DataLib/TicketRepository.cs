@@ -49,9 +49,9 @@ public class TicketRepository
         }
         List<Ticket> tickets = new List<Ticket>();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"SELECT * FROM tickets LIMIT $pageSize OFFSET $pageSize * ($pageNumber - 1)";
-        command.Parameters.AddWithValue("$pageSize", pageSize);
-        command.Parameters.AddWithValue("$pageNumber", pageNumber);
+        command.CommandText = @"SELECT * FROM tickets LIMIT @pageSize OFFSET @pageSize * (@pageNumber - 1)";
+        command.Parameters.AddWithValue("@pageSize", pageSize);
+        command.Parameters.AddWithValue("@pageNumber", pageNumber);
         NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
@@ -70,15 +70,15 @@ public class TicketRepository
     public bool Update(long id, Ticket ticket)
        {
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"UPDATE tickets SET hallNumber = $hallNumber
-         WHERE id = $id";
-        command.Parameters.AddWithValue("$id", id);
-        command.Parameters.AddWithValue("$movieId", ticket.movieId);
-        command.Parameters.AddWithValue("$ticketNumber", ticket.ticketNumber);
-        command.Parameters.AddWithValue("$place", ticket.place);
-        command.Parameters.AddWithValue("$row", ticket.row);
-        command.Parameters.AddWithValue("$startMovie", ticket.startMovie.ToString("0"));
-        command.Parameters.AddWithValue("$hallNumber", ticket.hallNumber);
+        command.CommandText = @"UPDATE tickets SET hall_number = @hall_number
+         WHERE id = @id";
+        command.Parameters.AddWithValue("@id", id);
+        command.Parameters.AddWithValue("@movie_id", ticket.movieId);
+        command.Parameters.AddWithValue("@ticket_number", ticket.ticketNumber);
+        command.Parameters.AddWithValue("@place", ticket.place);
+        command.Parameters.AddWithValue("@row", ticket.row);
+        command.Parameters.AddWithValue("@start_movie", ticket.startMovie);
+        command.Parameters.AddWithValue("@hall_number", ticket.hallNumber);
 
         int nChanged = command.ExecuteNonQuery();
         return nChanged == 1;
@@ -89,9 +89,9 @@ public class TicketRepository
     {
         List<Ticket> tickets = new List<Ticket>();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"SELECT tickets.id, tickets.ticketNumber, tickets.place, tickets.row,
-            tickets.startMovie, tickets.hallNumber FROM tickets,ticketpurchases WHERE
-            ticketpurchases.customer_id = $customer_id AND ticketpurchases.ticket_id = tickets.id"; //??
+        command.CommandText = @"SELECT tickets.id, tickets.ticket_number, tickets.place, tickets.row,
+            tickets.start_movie, tickets.hall_number FROM tickets,ticketpurchases WHERE
+            ticketpurchases.customer_id = @customer_id AND ticketpurchases.ticket_id = tickets.id"; //??
         NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
@@ -105,8 +105,8 @@ public class TicketRepository
     {
         Ticket ticket = new Ticket();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"SELECT * FROM tickets WHERE id = $id";
-        command.Parameters.AddWithValue("$id", id);
+        command.CommandText = @"SELECT * FROM tickets WHERE id = @id";
+        command.Parameters.AddWithValue("@id", id);
         NpgsqlDataReader reader = command.ExecuteReader();
         if (reader.Read())
         {
@@ -124,8 +124,8 @@ public class TicketRepository
     {
         Ticket ticket = new Ticket();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"DELETE FROM tickets WHERE id = $id";
-        command.Parameters.AddWithValue("$id", id);
+        command.CommandText = @"DELETE FROM tickets WHERE id = @id";
+        command.Parameters.AddWithValue("@id", id);
         int nChanged = command.ExecuteNonQuery();
         if (nChanged == 0)
         {
@@ -140,17 +140,17 @@ public class TicketRepository
     {
         NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText =
-        @"INSERT INTO tickets (movieId, ticketNumber, place, row, startMovie, hallNumber) 
-            VALUES ($movieId, $ticketNumber, $place, $row, $startMovie, $hallNumber);
+        @"INSERT INTO tickets (movie_id, ticket_number, place, row, start_movie, hall_number) 
+            VALUES (@movie_id, @ticket_number, @place, @row, @start_movie, @hall_number);
             
             SELECT last_insert_rowid();
             ";
-        command.Parameters.AddWithValue("$movieId", ticket.movieId);
-        command.Parameters.AddWithValue("$ticketNumber", ticket.ticketNumber);
-        command.Parameters.AddWithValue("$place", ticket.place);
-        command.Parameters.AddWithValue("$row", ticket.row);
-        command.Parameters.AddWithValue("$startMovie", ticket.startMovie.ToString("0"));
-        command.Parameters.AddWithValue("$hallNumber", ticket.hallNumber);
+        command.Parameters.AddWithValue("@movie_id", ticket.movieId);
+        command.Parameters.AddWithValue("@ticket_number", ticket.ticketNumber);
+        command.Parameters.AddWithValue("@place", ticket.place);
+        command.Parameters.AddWithValue("@row", ticket.row);
+        command.Parameters.AddWithValue("@start_movie", ticket.startMovie.ToString("0"));
+        command.Parameters.AddWithValue("@hall_number", ticket.hallNumber);
         long newId = (long)command.ExecuteScalar();
         if (newId == 0)
         {
@@ -181,11 +181,11 @@ public class TicketRepository
     {
         List<Ticket> tickets = new List<Ticket>();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"SELECT * FROM sessions WHERE movie_id = $movie_id 
-            AND startMovie = $start AND hallNumber = $hall_id";
-        command.Parameters.AddWithValue("$movie_id", session.movie_id);
-        command.Parameters.AddWithValue("$start", session.start);
-        command.Parameters.AddWithValue("$hall_id", session.hall_id);
+        command.CommandText = @"SELECT * FROM sessions WHERE movie_id = @movie_id 
+            AND start_movie = @start AND hall_number = @hall_id";
+        command.Parameters.AddWithValue("@movie_id", session.movie_id);
+        command.Parameters.AddWithValue("@start", session.start);
+        command.Parameters.AddWithValue("@hall_id", session.hall_id);
         NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
