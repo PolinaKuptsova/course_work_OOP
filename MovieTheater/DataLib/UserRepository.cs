@@ -86,11 +86,11 @@ public class UserRepository
     {
         NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"UPDATE users SET name = @name, password = @password,
-        phoneNumber = @phoneNumber, age = @age WHERE id = @id";
+        phone_number = @phone_number, age = @age WHERE id = @id";
         command.Parameters.AddWithValue("@id", id);
         command.Parameters.AddWithValue("@name", user.Name);
         command.Parameters.AddWithValue("@password", user.Password);
-        command.Parameters.AddWithValue("@phoneNumber", user.PhoneNumber);
+        command.Parameters.AddWithValue("@phone_number", user.PhoneNumber);
         command.Parameters.AddWithValue("@age", user.age);
 
         int nChanged = command.ExecuteNonQuery();
@@ -112,7 +112,7 @@ public class UserRepository
     public bool UpdateUserStatus(long id, bool isBlocked)
     {
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"UPDATE users SET is_blockes = @is_blocked WHERE id = @id";
+        command.CommandText = @"UPDATE users SET is_blocked = @is_blocked WHERE id = @id";
         command.Parameters.AddWithValue("@id", id);
         command.Parameters.AddWithValue("is_blocked", isBlocked);
 
@@ -182,9 +182,7 @@ public class UserRepository
         NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText =
         @"INSERT INTO users (name, password, phone_number, is_blocked, age, access_level, balance) 
-            VALUES (@name, @password, @phone_number, @is_blocked, @age, @access_level, @balance);
-            
-            SELECT currval('id');";
+            VALUES (@name, @password, @phone_number, @is_blocked, @age, @access_level, @balance) RETURNING id;";
         string hash = Authentication.GetHash(user.Password);
         command.Parameters.AddWithValue("@name", user.Name);
         command.Parameters.AddWithValue("@password", hash);
@@ -194,29 +192,21 @@ public class UserRepository
         command.Parameters.AddWithValue("@access_level", user.accessLevel);
         command.Parameters.AddWithValue("@balance", user.Balance);
         
-        long newId = (long)command.ExecuteScalar();
-        if (newId == 0)
-        {
-            return 0;
-        }
-        else
-        {
-            return (int)newId; ;
-        }
-
+        int newId = (int)command.ExecuteScalar();
+        return newId;
     }
 
     public Customer GetUser(NpgsqlDataReader reader)
     {
-        Customer user = new Customer();;
-        user.id = long.Parse(reader.GetString(0));
+        Customer user = new Customer();
+        user.id = reader.GetInt32(0);
         user.Name = reader.GetString(1);
         user.Password = reader.GetString(2);
         user.PhoneNumber = reader.GetString(3);
-        user.age = int.Parse(reader.GetString(5));
-        user.isBlocked = reader.GetString(4) == "0" ? false : true;
+        user.age = reader.GetInt32(5);
+        user.isBlocked = reader.GetInt32(4) == 0 ? false : true;
         user.accessLevel = reader.GetString(6);
-        user.Balance = double.Parse(reader.GetString(7));
+        user.Balance = reader.GetDouble(7);
 
         return user;
     }

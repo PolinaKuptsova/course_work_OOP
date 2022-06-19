@@ -138,52 +138,30 @@ public class SessionRepository
             return 1;
         }
     }
+
+
     public int Insert(Session Session)
     {
         NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText =
-        @"INSERT INTO Sessions (movie_id, hall_id, start, end, has_avalibleseats, is_canceled) 
-            VALUES (@movie_id, @hall_id, @start, @end, @has_avalibleseats, @is_canceled);
-            
-            SELECT last_insert_rowid();
+        @"INSERT INTO Sessions (movie_id, hall_id, start_movie, end, has_avalibleseats, is_canceled) 
+            VALUES (@movie_id, @hall_id, @start_movie, @has_avalibleseats, @is_canceled)
+            RETURNING id;
             ";
         command.Parameters.AddWithValue("@hall_id", Session.hall_id);
         command.Parameters.AddWithValue("@movie_id", Session.movie_id);
-        command.Parameters.AddWithValue("@start", Session.start.ToString("0"));
-        command.Parameters.AddWithValue("@end", Session.end.ToString("0"));
+        command.Parameters.AddWithValue("@start_movie", Session.start);
         command.Parameters.AddWithValue("@has_avalibleseats", Session.has_avalibleSeats == false ? 1 : 0);
-        long newId = (long)command.ExecuteScalar();
-        if (newId == 0)
-        {
-            return 0;
-        }
-        else
-        {
-            return (int)newId; ;
-        }
+        int newId = (int)command.ExecuteScalar();
+        return newId;
 
-    }
-
-
-    public Session GetSession(NpgsqlDataReader reader )
-    {
-        Session Session = new Session();
-        Session.id = long.Parse(reader.GetString(0));
-        Session.hall_id = long.Parse(reader.GetString(2));
-        Session.movie_id = long.Parse(reader.GetString(1));
-        Session.start = DateTime.Parse(reader.GetString(3));
-        Session.end = DateTime.Parse(reader.GetString(4));
-        Session.has_avalibleSeats = reader.GetString(5) == "1" ? false : true;
-        Session.is_canceled = reader.GetString(6) == "1" ? false : true;
-
-        return Session;
     }
 
     public Session GetSessionByTime(DateTime movieTime)
     {
         Session session = new Session();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"Select FROM sessions WHERE start = @movie_time";
+        command.CommandText = @"Select FROM sessions WHERE start_movie = @movie_time";
         command.Parameters.AddWithValue("@movie_time", movieTime);
         NpgsqlDataReader reader  = command.ExecuteReader();
         if (reader.Read())
@@ -198,16 +176,15 @@ public class SessionRepository
         return session;
     }
 
-    // needs checking
-    public List<Session> GetMovieSessionsOnDay(long movie_id, DateTime chosenDay)
+    public List<Session> GetActualMovieSessions(long movie_id)
     {
         List<Session> sessions = new List<Session>();
         NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"SELECT * FROM sessions WHERE movie_id = @movie_id 
-            AND start = @chosenDay";
+            AND start_movie >= @chosen_day";
         command.Parameters.AddWithValue("@movie_id", movie_id);
-        command.Parameters.AddWithValue("@chosenDay", chosenDay);
-        NpgsqlDataReader reader  = command.ExecuteReader();
+        command.Parameters.AddWithValue("@chosen_day", new DateTime(2022,06,16));
+        NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             Session session = GetSession(reader);
@@ -215,6 +192,18 @@ public class SessionRepository
         }
         reader.Close();
         return sessions;
+    }
+    public Session GetSession(NpgsqlDataReader reader )
+    {
+        Session Session = new Session();
+        Session.id = reader.GetInt32(0);
+        Session.hall_id = reader.GetInt32(2);
+        Session.movie_id = reader.GetInt32(1);
+        Session.start = reader.GetDateTime(3);
+        Session.has_avalibleSeats = reader.GetInt32(4) == 1 ? false : true;
+        Session.is_canceled = reader.GetInt32(5) == 1 ? false : true;
+
+        return Session;
     }
 
 }

@@ -1,12 +1,12 @@
 using System;
-using Npgsql; 
+using Npgsql;
 using System.Collections.Generic;
 
 public class TicketRepository
 {
     private NpgsqlConnection connection;
 
-    public TicketRepository (NpgsqlConnection connection)
+    public TicketRepository(NpgsqlConnection connection)
     {
         this.connection = connection;
 
@@ -62,13 +62,9 @@ public class TicketRepository
         return tickets;
     }
 
-    internal List<Ticket> GetUserTickets(long id)
-    {
-        throw new NotImplementedException();
-    }
 
     public bool Update(long id, Ticket ticket)
-       {
+    {
         NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"UPDATE tickets SET hall_number = @hall_number
          WHERE id = @id";
@@ -89,9 +85,10 @@ public class TicketRepository
     {
         List<Ticket> tickets = new List<Ticket>();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"SELECT tickets.id, tickets.ticket_number, tickets.place, tickets.row,
-            tickets.start_movie, tickets.hall_number FROM tickets,ticketpurchases WHERE
-            ticketpurchases.customer_id = @customer_id AND ticketpurchases.ticket_id = tickets.id"; //??
+        command.CommandText = @"SELECT tickets.id, tickets.movie_id, tickets.ticket_number, tickets.place,
+            tickets.row, tickets.start_movie, tickets.hall_number FROM tickets,ticketpurchases 
+            WHERE ticketpurchases.customer_id = @customer_id AND ticketpurchases.ticket_id = tickets.id";
+        command.Parameters.AddWithValue("@customer_id", customer_id);
         NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
@@ -136,55 +133,34 @@ public class TicketRepository
             return 1;
         }
     }
-    public long Insert(Ticket ticket)
+    public int Insert(Ticket ticket)
     {
         NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText =
         @"INSERT INTO tickets (movie_id, ticket_number, place, row, start_movie, hall_number) 
-            VALUES (@movie_id, @ticket_number, @place, @row, @start_movie, @hall_number);
-            
-            SELECT last_insert_rowid();
+            VALUES (@movie_id, @ticket_number, @place, @row, @start_movie, @hall_number)
+            RETURNING id
             ";
         command.Parameters.AddWithValue("@movie_id", ticket.movieId);
         command.Parameters.AddWithValue("@ticket_number", ticket.ticketNumber);
         command.Parameters.AddWithValue("@place", ticket.place);
         command.Parameters.AddWithValue("@row", ticket.row);
-        command.Parameters.AddWithValue("@start_movie", ticket.startMovie.ToString("0"));
+        command.Parameters.AddWithValue("@start_movie", ticket.startMovie);
         command.Parameters.AddWithValue("@hall_number", ticket.hallNumber);
-        long newId = (long)command.ExecuteScalar();
-        if (newId == 0)
-        {
-            return 0;
-        }
-        else
-        {
-            return newId; ;
-        }
+        
+        int newId = (int)command.ExecuteScalar();
+        return newId;
 
-    }
-
-    public Ticket GetTicket(NpgsqlDataReader reader)
-    {
-        Ticket ticket = new Ticket();
-        ticket.id = long.Parse(reader.GetString(0));
-        ticket.movieId = long.Parse(reader.GetString(1));
-        ticket.ticketNumber = reader.GetString(2);
-        ticket.place = int.Parse(reader.GetString(3));
-        ticket.row = int.Parse(reader.GetString(4));
-        ticket.startMovie = DateTime.Parse(reader.GetString(5));
-        ticket.hallNumber = int.Parse(reader.GetString(6));
-
-        return ticket;
     }
 
     public List<Ticket> GetPlacesForSession(Session session)
     {
         List<Ticket> tickets = new List<Ticket>();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"SELECT * FROM sessions WHERE movie_id = @movie_id 
-            AND start_movie = @start AND hall_number = @hall_id";
+        command.CommandText = @"SELECT * FROM tickets WHERE movie_id = @movie_id 
+            AND start_movie = @start_movie AND hall_number = @hall_id";
         command.Parameters.AddWithValue("@movie_id", session.movie_id);
-        command.Parameters.AddWithValue("@start", session.start);
+        command.Parameters.AddWithValue("@start_movie", session.start);
         command.Parameters.AddWithValue("@hall_id", session.hall_id);
         NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
@@ -194,5 +170,19 @@ public class TicketRepository
         }
         reader.Close();
         return tickets;
+    }
+
+    public Ticket GetTicket(NpgsqlDataReader reader)
+    {
+        Ticket ticket = new Ticket();
+        ticket.id = reader.GetInt32(0);
+        ticket.movieId = reader.GetInt32(1);
+        ticket.ticketNumber = reader.GetString(2);
+        ticket.place = reader.GetInt32(3);
+        ticket.row = reader.GetInt32(4);
+        ticket.startMovie = reader.GetDateTime(5); 
+        ticket.hallNumber = reader.GetInt32(6);
+
+        return ticket;
     }
 }

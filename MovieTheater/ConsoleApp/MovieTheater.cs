@@ -15,16 +15,16 @@ public class MovieTheater : AbstrMovieTheater
     {
         try
         {
-            if (this.user != null)
+            if (this.User != null)
             {
-                if (this.user.accessLevel != "customer")
+                if (this.User.accessLevel != "customer")
                 {
                     MovieAssistant assist = new MovieAssistant();
-                    assist.SetMovieAssistant(this.user);
+                    assist.SetMovieAssistant(this.User);
                     assist.AddMovie(this.movieTheaterComponents);
                     return;
                 }
-                throw new Exception($"Your acces level is not suitable, you are a {this.user.accessLevel}");
+                throw new Exception($"Your acces level is not suitable, you are a {this.User.accessLevel}");
             }
             throw new Exception("First log in!");
         }
@@ -38,15 +38,15 @@ public class MovieTheater : AbstrMovieTheater
     {
         try
         {
-            if (this.user != null)
+            if (this.User != null)
             {
-                if (this.user.accessLevel == "admin")
+                if (this.User.accessLevel == "admin")
                 {
                     Admin admin = new Admin();
                     admin.AddMovieAssistant(this.movieTheaterComponents);
                     return;
                 }
-                throw new Exception($"Your acces level is not suitable, you are a {this.user.accessLevel}");
+                throw new Exception($"Your acces level is not suitable, you are a {this.User.accessLevel}");
             }
             throw new Exception("First log in!");
         }
@@ -60,16 +60,16 @@ public class MovieTheater : AbstrMovieTheater
     {
         try
         {
-            if (this.user != null)
+            if (this.User != null)
             {
-                if (this.user.accessLevel == "admin")
+                if (this.User.accessLevel == "admin")
                 {
                     Admin admin = new Admin();
-                    admin = admin.SetAdmin(this.user);
+                    admin = admin.SetAdmin(this.User);
                     admin.BlockUser(this.movieTheaterComponents);
                     return;
                 }
-                throw new Exception($"Your acces level is not suitable, you are a {this.user.accessLevel}");
+                throw new Exception($"Your acces level is not suitable, you are a {this.User.accessLevel}");
             }
             throw new Exception("First log in!");
         }
@@ -83,10 +83,11 @@ public class MovieTheater : AbstrMovieTheater
     {
         try
         {
-            if (this.user != null)
+            if (this.User != null)
             {
+                Console.WriteLine("\r\nBILLBOARD");
                 ProcessShowBillboard();
-                this.user.ChooseTicket(this.movieTheaterComponents);
+                this.User.ChooseTicket(this.movieTheaterComponents);
                 return;
             }
             throw new Exception("First log in!");
@@ -101,16 +102,16 @@ public class MovieTheater : AbstrMovieTheater
     {
         try
         {
-            if (this.user != null)
+            if (this.User != null)
             {
-                if (this.user.accessLevel != "customer")
+                if (this.User.accessLevel != "customer")
                 {
                     MovieAssistant assist = new MovieAssistant();
-                    assist.SetMovieAssistant(this.user);
+                    assist.SetMovieAssistant(this.User);
                     assist.CancelSession(this.movieTheaterComponents);
                     return;
                 }
-                throw new Exception($"Your acces level is not suitable, you are a {this.user.accessLevel}");
+                throw new Exception($"Your acces level is not suitable, you are a {this.User.accessLevel}");
             }
             throw new Exception("First log in!");
 
@@ -125,16 +126,16 @@ public class MovieTheater : AbstrMovieTheater
     {
         try
         {
-            if (this.user != null)
+            if (this.User != null)
             {
-                if (this.user.accessLevel != "customer")
+                if (this.User.accessLevel != "customer")
                 {
                     MovieAssistant assist = new MovieAssistant();
-                    assist.SetMovieAssistant(this.user);
+                    assist.SetMovieAssistant(this.User);
                     assist.DeleteMovie(this.movieTheaterComponents);
                     return;
                 }
-                throw new Exception($"Your acces level is not suitable, you are a {this.user.accessLevel}");
+                throw new Exception($"Your acces level is not suitable, you are a {this.User.accessLevel}");
             }
             throw new Exception("First log in!");
         }
@@ -148,16 +149,16 @@ public class MovieTheater : AbstrMovieTheater
     {
         try
         {
-            if (this.user != null)
+            if (this.User != null)
             {
-                if (this.user.accessLevel == "admin")
+                if (this.User.accessLevel == "admin")
                 {
                     Admin admin = new Admin();
-                    admin = admin.SetAdmin(this.user);
+                    admin = admin.SetAdmin(this.User);
                     admin.DeleteMovieAssistant(this.movieTheaterComponents);
                     return;
                 }
-                throw new Exception($"Your acces level is not suitable, you are a {this.user.accessLevel}");
+                throw new Exception($"Your acces level is not suitable, you are a {this.User.accessLevel}");
             }
             throw new Exception("First log in!");
         }
@@ -171,9 +172,13 @@ public class MovieTheater : AbstrMovieTheater
     {
         try
         {
-            if (this.user != null)
+            if (this.User != null)
             {
-                this.user.DeleteMyAccount(this.movieTheaterComponents);
+                this.User.DeleteMyAccount(this.movieTheaterComponents);
+                if(this.User.deleted)
+                {
+                    this.User = null;
+                }
                 return;
             }
             throw new Exception("First log in!");
@@ -205,16 +210,16 @@ public class MovieTheater : AbstrMovieTheater
     {
         try
         {
-            if (this.user != null)
+            if (this.User != null)
             {
-                if (this.user.accessLevel != "customer")
+                if (this.User.accessLevel != "customer")
                 {
                     MovieAssistant assist = new MovieAssistant();
-                    assist.SetMovieAssistant(this.user);
+                    assist.SetMovieAssistant(this.User);
                     assist.GetAllCustomers(this.movieTheaterComponents);
                     return;
                 }
-                throw new Exception($"Your acces level is not suitable, you are a {this.user.accessLevel}");
+                throw new Exception($"Your acces level is not suitable, you are a {this.User.accessLevel}");
             }
             throw new Exception("First log in!");
         }
@@ -228,16 +233,16 @@ public class MovieTheater : AbstrMovieTheater
     {
         try
         {
-            if (this.user != null)
+            if (this.User != null)
             {
-                if (this.user.accessLevel != "customer")
+                if (this.User.accessLevel != "customer")
                 {
                     MovieAssistant assist = new MovieAssistant();
-                    assist.SetMovieAssistant(this.user);
+                    assist.SetMovieAssistant(this.User);
                     assist.GetAllMovies(this.movieTheaterComponents);
                     return;
                 }
-                throw new Exception($"Your acces level is not suitable, you are a {this.user.accessLevel}");
+                throw new Exception($"Your acces level is not suitable, you are a {this.User.accessLevel}");
             }
             throw new Exception("First log in!");
         }
@@ -251,36 +256,36 @@ public class MovieTheater : AbstrMovieTheater
     {
         try
         {
-            if (this.user == null)
+            if (this.User == null)
             {
-                this.user = MovieTheater.LogIn(this.movieTheaterComponents);
+                this.User = MovieTheater.LogIn(this.movieTheaterComponents);
 
-                if (this.user.accessLevel == "moderator")
-                {
-                    ShowInfoForAssist();
-                }
-                else if (this.user.accessLevel == "customer")
-                {
-                    ShowInfoForCustomer();
-                }
-                else
+                ShowInfoForCustomer();
+                if (this.User.accessLevel == "admin")
                 {
                     ShowInfoForAdmin();
                 }
+                else if (this.User.accessLevel == "moderator")
+                {
+                    ShowInfoForAssist();
+                }
             }
-            throw new Exception("Yo have already loged in!");
+            else
+            {
+                throw new Exception("Yo have already loged in!");
+            }
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
         }
     }
-        private static Customer LogIn(MovieTheaterComponents movieTheater)
+    private static Customer LogIn(MovieTheaterComponents movieTheater)
     {
         Console.WriteLine("Enter your name");
         string name = Console.ReadLine();
         Customer user = Authentication.ValidateUserName(name, movieTheater.userRepository);
-
+        
         Console.WriteLine("Enter your password");
         string password = Console.ReadLine();
         bool hashVerified = Authentication.VerifyHash(password, user.Password);
@@ -292,18 +297,17 @@ public class MovieTheater : AbstrMovieTheater
         throw new Exception($"username {name} or {password} is incorrect.");
     }
 
-
     public override void ProcessRegistrate()
     {
         try
         {
-            if (this.user == null)
+            if (this.User == null)
             {
-                this.user = MovieTheater.Registrate(this.movieTheaterComponents);
+                this.User = MovieTheater.Registrate(this.movieTheaterComponents);
                 Console.WriteLine("You have been successfully registrated!\r\nDo you want to stay inform about premier? 'Yes/No'");   
                 string subscribe = Console.ReadLine();
                 if(subscribe == "Yes"){
-                    this.user.SubscribeForPremiereNotification(this.movieTheaterComponents);
+                    this.User.SubscribeForPremiereNotification(this.movieTheaterComponents);
                 }
                 ShowInfoForCustomer();
                 return;
@@ -320,22 +324,22 @@ public class MovieTheater : AbstrMovieTheater
     {
         Console.WriteLine("Please, enter info about yourself:");
         Console.Write("Name: ");
-        string name = "Polina";
+        string name = "Kate";//Console.ReadLine();
 
-        User user = Authentication.ValidateUserName(name, movieTheater.userRepository);
+        /*User user = Authentication.ValidateUserName(name, movieTheater.userRepository);
         if (user != null)
         {
             throw new Exception("Such username '{name}' is already exists!");
-        }
+        }*/
 
         Console.Write("\r\nPassword: ");
-        string password = "123";
+        string password = "123";//Console.ReadLine();
 
         Console.Write("\r\nPhone number: ");
-        string phoneNumber = "1234569";
+        string phoneNumber = "21564987";//Console.ReadLine();
 
         Console.Write("\r\nAge: ");
-        string ageInput = "19";
+        string ageInput = "28";//Console.ReadLine();
 
         if (!Int32.TryParse(ageInput, out int i))
         {
@@ -347,7 +351,7 @@ public class MovieTheater : AbstrMovieTheater
             throw new Exception($"Incorrect age '{ageInput}'. Please try again!");
         }
 
-        Customer customer = new Customer();
+        Customer customer = new Customer(movieTheater.stateFeaturesRepository);
         customer.Name = name;
         customer.Password = password;
         customer.PhoneNumber = phoneNumber;
@@ -355,12 +359,7 @@ public class MovieTheater : AbstrMovieTheater
         customer.accessLevel = "customer";
 
         long id = 0 ;
-        try {  id = movieTheater.userRepository.Insert(customer); }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
-
+        id = movieTheater.userRepository.Insert(customer); 
         if (id != 0)
         {
             return movieTheater.userRepository.GetById(id);
@@ -383,23 +382,25 @@ public class MovieTheater : AbstrMovieTheater
     private static void ShowBillboard(MovieTheaterComponents movieTheaterComponents)
     {
         List<Movie> movies = movieTheaterComponents.movieRepository.GetAllAvalibleMovies();
-        if (movies != null)
+        if (movies.Count != 0)
         {
             foreach (Movie movie in movies)
             {
                 Console.WriteLine(movie);
             }
+            Console.WriteLine();
+            return;
         }
         throw new Exception($"Unfortunatelly, there is no movies on avalible now.");
     }
     
     public override void ProcessShowMyAccount()
     {
-                try
+        try
         {
-            if (this.user != null)
+            if (this.User != null)
             {
-                this.user.ShowMyAccount(this.movieTheaterComponents);
+                this.User.ShowMyAccount(this.movieTheaterComponents);
                 return;
             }
             throw new Exception("First log in!");
@@ -412,12 +413,11 @@ public class MovieTheater : AbstrMovieTheater
 
     public override void ProcessShowMyTickets()
     {
-
         try
         {
-            if (this.user != null)
+            if (this.User != null)
             {
-                this.user.ShowMyTickets(this.movieTheaterComponents);
+                this.User.ShowMyTickets(this.movieTheaterComponents);
                 return;
             }
             throw new Exception("First log in!");
@@ -432,9 +432,9 @@ public class MovieTheater : AbstrMovieTheater
     {
         try
         {
-            if (this.user != null)
+            if (this.User != null)
             {
-                this.user.UpdateMyAccount(this.movieTheaterComponents);
+                this.User.UpdateMyAccount(this.movieTheaterComponents);
                 return;
             }
             throw new Exception("First log in!");
@@ -448,7 +448,7 @@ public class MovieTheater : AbstrMovieTheater
 
     public override void ResetCommandInfo()
     {
-        this.user = null;
+        this.User = null;
     }
     private void ShowInfoForUser()
     {

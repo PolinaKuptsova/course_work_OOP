@@ -9,24 +9,17 @@ public class BankCard
     {
     }
 
-    public BankCard(string cardNumber, DateTime expiredDate, int cvv)
-    {
-        CardNumber = cardNumber;
-        ExpiredDate = expiredDate;
-        this.cvv = cvv;
-    }
-
     public int CVV
     {
         get
         {
-            return CVV;
+            return cvv;
         }
         set
         {
             if (value != 0)
             {
-                CVV = value;
+                cvv = value;
             }
 
         }

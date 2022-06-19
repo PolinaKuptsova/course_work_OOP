@@ -39,3 +39,8 @@ Please choose an operation:
 -show billboard
 -exit
 For more,please, log in!*/
+
+
+// state features repository
+// add movie hall + decorator
+// id in repos

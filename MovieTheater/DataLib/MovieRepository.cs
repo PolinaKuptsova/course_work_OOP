@@ -75,7 +75,7 @@ public class MovieRepository
         command.Parameters.AddWithValue("@genre", movie.genre);
         command.Parameters.AddWithValue("@director", movie.director);
         command.Parameters.AddWithValue("@duration", movie.duration);
-        command.Parameters.AddWithValue("@premeire", movie.premiere);
+        command.Parameters.AddWithValue("@premiere", movie.premiere);
         command.Parameters.AddWithValue("@last_day_on_screen", movie.lastDayOnScreen);
         command.Parameters.AddWithValue("@description", movie.description);
         command.Parameters.AddWithValue("@age_range", movie.ageRange);
@@ -104,7 +104,7 @@ public class MovieRepository
         return Movie;
     }
 
-    public long GetMovieByTitle(string title)
+    public Movie GetMovieByTitle(string title)
     {
         Movie movie = new Movie();
         NpgsqlCommand command = this.connection.CreateCommand();
@@ -115,13 +115,10 @@ public class MovieRepository
         {
             movie = GetMovie(reader);
         }
-        else
-        {
-            return 0;
-        }
         reader.Close();
-        return movie.id;
+        return movie;
     }
+    
     public int DeleteById(long id)
     {
         Movie Movie = new Movie();
@@ -138,43 +135,37 @@ public class MovieRepository
             return 1;
         }
     }
+
     public int Insert(Movie movie)
     {
         NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText =
-        @"INSERT INTO movies (title, genre, director, duration, 
-            premiere, last_day_on_screen, description, ageRange) 
-            VALUES (@title, @genre, @director, @duration, 
-            @premiere, @last_day_on_screen, @description, @age_range);
-            
-            SELECT last_insert_rowid();
+        @"INSERT INTO movies (title, genre, director, 
+            premiere, last_day_on_screen, description, duration, age_range) 
+            VALUES (@title, @genre, @director,
+            @premiere, @last_day_on_screen, @description, @duration, @age_range)
+            RETURNING id;
             ";
         command.Parameters.AddWithValue("@title", movie.title);
         command.Parameters.AddWithValue("@genre", movie.genre);
         command.Parameters.AddWithValue("@director", movie.director);
         command.Parameters.AddWithValue("@duration", movie.duration);
-        command.Parameters.AddWithValue("@premeire", movie.premiere);
+        command.Parameters.AddWithValue("@premiere", movie.premiere);
         command.Parameters.AddWithValue("@last_day_on_screen", movie.lastDayOnScreen);
         command.Parameters.AddWithValue("@description", movie.description);
         command.Parameters.AddWithValue("@age_range", movie.ageRange);
 
-        long newId = (long)command.ExecuteScalar();
-        if (newId == 0)
-        {
-            return 0;
-        }
-        else
-        {
-            return (int)newId; ;
-        }
-
+        
+        int newId = (int)command.ExecuteScalar();
+        return newId;
+        
     }
 
     public List<Movie> GetAllAvalibleMovies()
     {
         List<Movie> movies = new List<Movie>();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"SELECT * FROM movies WHERE @day BETWEEN @premiere AND @last_day_on_screen";
+        command.CommandText = @"SELECT * FROM movies WHERE @day BETWEEN premiere AND last_day_on_screen";
         command.Parameters.AddWithValue("@day", DateTime.Now);
         NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
@@ -188,15 +179,15 @@ public class MovieRepository
     public Movie GetMovie(NpgsqlDataReader reader)
     {
         Movie movie = new Movie();
-        movie.id = long.Parse(reader.GetString(0));
+        movie.id = reader.GetInt32(0);
         movie.title = reader.GetString(1);
         movie.genre = reader.GetString(2);
         movie.director = reader.GetString(3);
-        movie.duration = double.Parse(reader.GetString(4));
-        movie.premiere = DateTime.Parse(reader.GetString(5));
-        movie.lastDayOnScreen = DateTime.Parse(reader.GetString(6));
-        movie.description = reader.GetString(7);
-        movie.ageRange = int.Parse(reader.GetString(8));
+        movie.duration = reader.GetDouble(7);
+        movie.premiere = reader.GetDateTime(4);
+        movie.lastDayOnScreen = reader.GetDateTime(5);
+        movie.description = reader.GetString(6);
+        movie.ageRange = reader.GetInt32(8);
 
         return movie;
     }

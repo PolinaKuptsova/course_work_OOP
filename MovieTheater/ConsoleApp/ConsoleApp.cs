@@ -28,7 +28,7 @@ public static class ConsoleApp{
         {
             bool found = false;
             Console.WriteLine("Enter command: ");
-            string command = "registrate";
+            string command = "registrate";//Console.ReadLine();
             for (int i = 0; i < processControl.allCommands.Length; i++)
             {
                 if (command == processControl.allCommands[i])

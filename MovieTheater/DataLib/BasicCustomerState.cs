@@ -2,9 +2,10 @@ using System;
 public class BasicCustomerState : CustomerState  
 {
     // Constructor
-    public BasicCustomerState(Customer customer) : base(customer)
+    public BasicCustomerState(Customer customer, StateFeaturesRepository stateFeaturesRepository) : base(customer, stateFeaturesRepository)
     {
         this.Customer = customer;
+        this.StateFeaturesRepository = stateFeaturesRepository;
         Initialize();
     }
 
@@ -20,7 +21,7 @@ public class BasicCustomerState : CustomerState
 
     private void Initialize()
     {
-        StateFeatures = stateFeaturesRepository.GetStateFeatures("basic");  
+        StateFeatures = this.StateFeaturesRepository.GetStateFeatures("basic");  
     }
 
     private void StateChangePrice()

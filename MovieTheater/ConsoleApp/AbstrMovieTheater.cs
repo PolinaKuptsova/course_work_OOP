@@ -3,28 +3,41 @@ using System.Collections.Generic;
 
 public abstract class AbstrMovieTheater
 {
-    public Customer user;
+    private Customer user;
     public MovieTheaterComponents movieTheaterComponents;
     public string[] allCommands;
     public List<Action> allProcesses;
 
+    public Customer User
+    {
+        get
+        {
+            return user;
+        }
+        set
+        {
+            user = value;
+        }
+    }
 
     protected AbstrMovieTheater(MovieTheaterComponents movieTheaterComponents)
     {
         this.movieTheaterComponents = movieTheaterComponents;
         SetCommandInfo();
     }
+
     public void SetCommandInfo()
     {
         this.allCommands = new string[] {"block user","add assist","delete assist", "delete movie","add movie", "cancel session", "get all customers",
             "get all movies","show my tickets","update my account", "show my account", "delete my account", "buy ticket", "exit", "log in",
-            "registrate", "shw billboard"};
+            "registrate", "show billboard"};
         this.allProcesses = new List<Action>{ProcessBlockUser, ProcessAddMovieAssist, ProcessDeleteMovieAssist,
             ProcessDeleteMovie, ProcessAddMovie, ProcessCancelSession, ProcessGetAllCustomers,
             ProcessGetAllMovies, ProcessShowMyTickets, ProcessUpdateMyAccount, ProcessShowMyAccount,
             ProcessDeleteMyAccount, ProcessBuyTicket, ProcessExit, ProcessLogIn,
             ProcessRegistrate, ProcessShowBillboard};
     }
+
     public abstract void ResetCommandInfo();
     public abstract void ProcessBlockUser();
     public abstract void ProcessAddMovieAssist();

@@ -1,16 +1,19 @@
+using System;
+
 abstract public class CustomerState
 {
     private Customer customer;
     private StateFeatures stateFeatures;
-    public StateFeaturesRepository stateFeaturesRepository;
+    private StateFeaturesRepository stateFeaturesRepository;
 
     public CustomerState()
     {
     }
 
-    public CustomerState(Customer customer)
+    public CustomerState(Customer customer, StateFeaturesRepository stateFeaturesRepository)
     {
         this.Customer = customer;
+        this.StateFeaturesRepository = stateFeaturesRepository;
     }
 
 
@@ -25,13 +28,23 @@ abstract public class CustomerState
 
     public Customer Customer
     {
-        get { return Customer; }
-        set { Customer = value; }
+        get { return customer; }
+        set { customer = value; }
+    }
+    
+    public StateFeatures StateFeatures
+    {
+        get => stateFeatures;
+        set => stateFeatures = value;
+    }
+    public StateFeaturesRepository StateFeaturesRepository
+    {
+        get => stateFeaturesRepository;
+        set => stateFeaturesRepository = value;
     }
 
-    public StateFeatures StateFeatures 
-    { get => stateFeatures; set => stateFeatures = value; }
-
     public abstract void PayForPurchase(double price);
+
+
 
 }

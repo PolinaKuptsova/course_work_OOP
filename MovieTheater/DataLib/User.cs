@@ -3,47 +3,29 @@ using System.Collections.Generic;
 
 public abstract class User 
 {
-    public long id;
+    public int id;
     private string name;
-    string password;
-    string phoneNumber;
+    private string password;
+    private string phoneNumber;
     public bool isBlocked;
     public int age;
     public string accessLevel;
-    double balance;
-    public List<Ticket> tickets;
+    private double balance;
 
-    public User()
-    {
-    }
+    protected User()
+    {  }
 
-    public User(string name, string password, string phoneNumber, bool isBlocked, int age, string accessLevel, double balance)
-    {
-        Name = name;
-        Password = password;
-        PhoneNumber = phoneNumber;
-        this.isBlocked = isBlocked;
-        this.age = age;
-        this.accessLevel = accessLevel;
-        Balance = balance;
-    }
-
-    public abstract void ShowMyTickets(MovieTheaterComponents movieTheaterComponents);
-    public abstract void ChooseTicket(MovieTheaterComponents movieTheaterComponents);
-    public abstract void UpdateMyAccount(MovieTheaterComponents movieTheaterComponents);
-    public abstract void DeleteMyAccount(MovieTheaterComponents movieTheaterComponents);
-    public abstract void ShowMyAccount(MovieTheaterComponents movieTheaterComponents);
     public string Name
     {
         get
         {
-            return Name;
+            return name;
         }
         set
         {
             if (!string.IsNullOrEmpty(value))
             {
-                Name = value;
+                name = value;
             }
             else
             {
@@ -56,11 +38,11 @@ public abstract class User
     {
         get
         {
-            return Balance;
+            return balance;
         }
         set
         {
-            Balance += value;
+            balance += value;
         }
     }
 
@@ -68,13 +50,13 @@ public abstract class User
     {
         get
         {
-            return Password;
+            return password;
         }
         set
         {
             if (!string.IsNullOrEmpty(value))
             {
-                Password = value;
+                password = value;
             }
             else
             {
@@ -82,17 +64,18 @@ public abstract class User
             }
         }
     }
+
     public string PhoneNumber
     {
         get
         {
-            return PhoneNumber;
+            return phoneNumber;
         }
         set
         {
             if (!string.IsNullOrEmpty(value))
             {
-                PhoneNumber = value;
+                phoneNumber = value;
             }
             else
             {
@@ -101,6 +84,11 @@ public abstract class User
         }
     }
 
+    public abstract void ShowMyTickets(MovieTheaterComponents movieTheaterComponents);
+    public abstract void ChooseTicket(MovieTheaterComponents movieTheaterComponents);
+    public abstract void UpdateMyAccount(MovieTheaterComponents movieTheaterComponents);
+    public abstract void DeleteMyAccount(MovieTheaterComponents movieTheaterComponents);
+    public abstract void ShowMyAccount(MovieTheaterComponents movieTheaterComponents);
     public abstract void SubscribeForPremiereNotification(MovieTheaterComponents movieTheaterComponents);
     public abstract void SubscribeForSessionCncelingNotification(MovieTheaterComponents movieTheaterComponents);
 }

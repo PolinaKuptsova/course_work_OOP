@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+
 public sealed class Admin : MovieAssistant
 {
 
@@ -6,11 +8,19 @@ public sealed class Admin : MovieAssistant
     {
     }
 
-    public Admin SetAdmin (Customer user)
+    public Admin SetAdmin(Customer user)
     {
-        // to do
-        return new Admin{
-            
+        return new Admin
+        {
+            id = user.id,
+            Name = user.Name,
+            Password = user.Password,
+            PhoneNumber = user.PhoneNumber,
+            isBlocked = user.isBlocked,
+            accessLevel = user.accessLevel,
+            age = user.age,
+            Balance = user.Balance,
+            CustomerState = this.CustomerState 
         };
     }
 
@@ -18,25 +28,51 @@ public sealed class Admin : MovieAssistant
     {
         Console.WriteLine("Enter the name of a user: ");
         string userName = Console.ReadLine();
-        long user_id = movieTheaterComponents.userRepository.GetUserByName(userName);
-        if(user_id == 0){throw new Exception($"No such user '{userName}'");}
+        List<Customer> users = movieTheaterComponents.userRepository.GetAll();
+        Customer user = new Customer();
+        if(users.Count > 0)
+        {
+            foreach(Customer us in users)
+            {
+                if(userName == us.Name)
+                {
+                    user = us;
+                }
+            }
+        }
+        if(user.id == 0){throw new Exception($"No such user '{userName}' Registrate first!");}
 
-        movieTheaterComponents.userRepository.UpdateUserAccessLevel(user_id, "moderator");
+        bool isAdded = movieTheaterComponents.userRepository.UpdateUserAccessLevel(user.id, "moderator");
+        if(isAdded)
+        {
+            Console.WriteLine($"New assistant {userName} has been added!");
+        }
     }
 
     public void BlockUser(MovieTheaterComponents movieTheaterComponents)
     {
         Console.WriteLine("Enter the name of a customer you want to block/unblock");
         string userName = Console.ReadLine();
-        long user_id = movieTheaterComponents.userRepository.GetUserByName(userName);
+        List<Customer> users = movieTheaterComponents.userRepository.GetAll();
+        Customer user = new Customer();
+        if(users.Count > 0)
+        {
+            foreach(Customer us in users)
+            {
+                if(userName == us.Name)
+                {
+                    user = us;
+                }
+            }
+        }
 
         Console.WriteLine("Enter 'true' if you want to block and 'false' if you want to unblock the user:");
         string newStatus = Console.ReadLine();
         bool user_status = bool.Parse(newStatus);
 
-        if (user_id != 0)
+        if (user.id != 0)
         {
-            bool res = movieTheaterComponents.userRepository.UpdateUserStatus(user_id, user_status);
+            bool res = movieTheaterComponents.userRepository.UpdateUserStatus(user.id, user_status);
             return;
         }
         throw new Exception("Incorrect name '{userName} or new status '{newStatus}'.'");
@@ -46,11 +82,23 @@ public sealed class Admin : MovieAssistant
     {
         Console.WriteLine("Enter the name of a movieassistant you want to delete");
         string assistName = Console.ReadLine();
-        long assist_id = movieTheaterComponents.userRepository.GetUserByName(assistName);
-
-        if (assist_id != 0)
+        List<Customer> users = movieTheaterComponents.userRepository.GetAll();
+        Customer assist = new Customer();
+        if(users.Count > 0)
         {
-            int res = movieTheaterComponents.userRepository.DeleteById(assist_id);
+            foreach(Customer us in users)
+            {
+                if(assistName == us.Name)
+                {
+                    assist = us;
+                }
+            }
+        }
+
+        if (assist.id != 0)
+        {
+            bool isAdded = movieTheaterComponents.userRepository.UpdateUserAccessLevel(assist.id, "customer");
+            Console.WriteLine($"Assistant {assistName} has been deleted");
             return;
         }
         throw new Exception("$Incorrect name '{assistName}.'");

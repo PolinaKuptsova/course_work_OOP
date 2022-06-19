@@ -15,7 +15,15 @@ public class MovieAssistant : Customer
     public MovieAssistant SetMovieAssistant(Customer user)
     {
         return new MovieAssistant{
-            
+            id = user.id,
+            Name = user.Name,
+            Password = user.Password,
+            PhoneNumber = user.PhoneNumber,
+            isBlocked = user.isBlocked,
+            accessLevel = user.accessLevel,
+            age = user.age,
+            Balance = user.Balance,
+            CustomerState = this.CustomerState
         };
     }
 
@@ -25,6 +33,19 @@ public class MovieAssistant : Customer
     {
         Console.WriteLine("Enter movie title: ");
         string title = Console.ReadLine();
+
+        List<Movie> allMovies = movieTheaterComponents.movieRepository.GetAll();
+        if(allMovies.Count > 0)
+        {
+            foreach(Movie m in allMovies)
+            {
+                if(title == m.title)
+                {
+                    throw new Exception($"Movie with such title {title} has been already added!");
+                }
+            }
+        }
+
         Console.WriteLine("Enter movie genre: ");
         string genre = Console.ReadLine();
         Console.WriteLine("Enter movie derector: ");
@@ -44,13 +65,14 @@ public class MovieAssistant : Customer
             title = title,
             genre = genre,
             director = director,
-            duration = double.Parse(durationStr),
+            duration = int.Parse(durationStr),
             premiere = DateTime.Parse(premiereStr),
             lastDayOnScreen = DateTime.Parse(lastDayOnScreenStr),
             description = description,
             ageRange = int.Parse(ageStr)
         };
         
+        long id = movieTheaterComponents.movieRepository.Insert(newMovie);
         NotifyMovieAdding(newMovie);       
     }
 
@@ -59,25 +81,29 @@ public class MovieAssistant : Customer
     {
         Console.WriteLine("Enter the movie title:");
         string title = Console.ReadLine();
-        long movie_id = movieTheaterComponents.movieRepository.GetMovieByTitle(title);
-        if (movie_id == 0) { throw new Exception($"No such film '{title}'!"); }
+        Movie movie = movieTheaterComponents.movieRepository.GetMovieByTitle(title);
+        if (movie == null) { throw new Exception($"No such film '{title}'!"); }
 
-        List<Session> sessions = movieTheaterComponents.sessionRepository.GetMovieSessions(movie_id);
+        List<Session> sessions = movieTheaterComponents.sessionRepository.GetMovieSessions(movie.id);
 
         foreach(Session sn in sessions){
             int isDeletedSession = movieTheaterComponents.sessionRepository.DeleteById(sn.id);
         }
-        int isDeletedMovie = movieTheaterComponents.movieRepository.DeleteById(movie_id);
+        int isDeletedMovie = movieTheaterComponents.movieRepository.DeleteById(movie.id);
+        if(isDeletedMovie == 1)
+        {
+            Console.WriteLine("Deleted succesessfully!");
+        }
     }
 
     public void CancelSession(MovieTheaterComponents movieTheaterComponents)
     {
         Console.WriteLine("Enter the movie title:");
         string title = Console.ReadLine();
-        long movie_id = movieTheaterComponents.movieRepository.GetMovieByTitle(title);
-        if(movie_id == 0){throw new Exception($"No such film '{title}'!");}
+        Movie movie = movieTheaterComponents.movieRepository.GetMovieByTitle(title);
+        if(movie == null){throw new Exception($"No such film '{title}'!");}
 
-        List<Session> sessions = movieTheaterComponents.sessionRepository.GetMovieSessions(movie_id);
+        List<Session> sessions = movieTheaterComponents.sessionRepository.GetMovieSessions(movie.id);
         foreach (Session sn in sessions)
         {
             Console.WriteLine(sn);
@@ -97,7 +123,7 @@ public class MovieAssistant : Customer
     public void GetAllCustomers(MovieTheaterComponents movieTheaterComponents)
     {
         List<Customer> customers = movieTheaterComponents.userRepository.GetAllByAccessLevel("customer");
-        if(customers == null){throw new System.Exception ("No customers yet!");}
+        if(customers.Count == 0){throw new System.Exception ("No customers yet!");}
         foreach(Customer c in customers)
         {
             Console.WriteLine(c);
@@ -107,7 +133,7 @@ public class MovieAssistant : Customer
     public void GetAllMovies(MovieTheaterComponents movieTheaterComponents)
     {
         List<Movie> movies = movieTheaterComponents.movieRepository.GetAll();
-        if(movies == null){throw new System.Exception ("No movies yet!");}
+        if(movies.Count == 0){throw new System.Exception ("No movies yet!");}
         foreach(Movie m in movies)
         {
             Console.WriteLine(m);

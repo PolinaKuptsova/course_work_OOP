@@ -1,7 +1,7 @@
 using System;
 public class Movie
 {
-    public long id;
+    public int id;
     public string title;
     public string genre;
     public string director;
@@ -28,6 +28,6 @@ public class Movie
 
     public override string ToString()
     {
-        return string.Format($"(#{title}) Hall: {genre} Start: {duration} Avalible: {premiere.ToString("d")}");
+        return string.Format($"#{id} Title: '{title}' Genre: '{genre}' Director: {director}");
     }
 }

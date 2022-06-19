@@ -3,10 +3,11 @@ using System.Collections.Generic;
 // do decorator
 public class MovieHall : Room
 {
-    public long hall_id;
+    public int hall_id;
     public string typeOfScreen;
     public int rowAmount;
     public int placesInRowAmount;
+    public string [,] places;
 
     public MovieHall()
     {
@@ -37,5 +38,10 @@ public class MovieHall : Room
     public override void Show_Info()
     {
         Console.WriteLine($"Hall #{hall_id}: Screen: {typeOfScreen}");
+    }
+
+    public override string ToString()
+    {
+        return string.Format($"#{hall_id} {rowAmount} x {placesInRowAmount}");
     }
 }

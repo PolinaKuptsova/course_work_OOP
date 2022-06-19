@@ -65,10 +65,10 @@ public class TicketPurchaseRepository
     public bool Update(long id, bool isCanceled)
     {
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"UPDATE ticketpurchases SET isCanceled = @isCanceled, 
+        command.CommandText = @"UPDATE ticketpurchases SET is_canceled = @is_cnceled, 
              WHERE ticket_id = @ticket_id";
         command.Parameters.AddWithValue("@ticket_id", id);
-        command.Parameters.AddWithValue("@isCanceled", isCanceled);
+        command.Parameters.AddWithValue("@is_canceled", isCanceled);
 
         int nChanged = command.ExecuteNonQuery();
         return nChanged == 1;
@@ -116,39 +116,31 @@ public class TicketPurchaseRepository
     {
         NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText =
-        @"INSERT INTO ticketPurchases (ticket_id, createdAt, price, customer_id, payment_way, is_canceled) 
-            VALUES (@ticket_id, @createdAt, @price, @customer_id, @payment_way, @is_canceled);
-            
-            SELECT last_insert_rowid();
+        @"INSERT INTO ticketPurchases (ticket_id, created_at, price, customer_id, payment_way, is_canceled) 
+            VALUES (@ticket_id, @created_at, @price, @customer_id, @payment_way, @is_canceled)
+            RETURNING id
             ";
         command.Parameters.AddWithValue("@ticket_id", ticketPurchase.ticket_id);
-        command.Parameters.AddWithValue("@createdAt", ticketPurchase.createdAt);
+        command.Parameters.AddWithValue("@created_at", ticketPurchase.createdAt);
         command.Parameters.AddWithValue("@price", ticketPurchase.price);
         command.Parameters.AddWithValue("@customer_id", ticketPurchase.customer_id);
         command.Parameters.AddWithValue("@payment_way", ticketPurchase.payment_way);
         command.Parameters.AddWithValue("@is_canceled", ticketPurchase.isCanceled);
-        long newId = (long)command.ExecuteScalar();
-        if (newId == 0)
-        {
-            return 0;
-        }
-        else
-        {
-            return (int)newId; ;
-        }
+        int newId = (int)command.ExecuteScalar();
+        return newId;
 
     }
 
     public TicketPurchase GetTicketPurchase(NpgsqlDataReader reader)
     {
         TicketPurchase ticketPurchase = new TicketPurchase();
-        ticketPurchase.id = long.Parse(reader.GetString(0));
-        ticketPurchase.ticket_id = long.Parse(reader.GetString(1));
-        ticketPurchase.createdAt = DateTime.Parse(reader.GetString(2));
-        ticketPurchase.price = double.Parse(reader.GetString(3));
-        ticketPurchase.customer_id = long.Parse(reader.GetString(4));
+        ticketPurchase.id = reader.GetInt64(0);
+        ticketPurchase.ticket_id = reader.GetInt64(1);
+        ticketPurchase.createdAt = reader.GetDateTime(2);
+        ticketPurchase.price = reader.GetDouble(3);
+        ticketPurchase.customer_id = reader.GetInt64(4);
         ticketPurchase.payment_way = reader.GetString(5);
-        ticketPurchase.isCanceled = reader.GetString(6) == "1" ? true : false;
+        ticketPurchase.isCanceled = reader.GetInt32(6) == 1 ? true : false;
 
         return ticketPurchase;
     }

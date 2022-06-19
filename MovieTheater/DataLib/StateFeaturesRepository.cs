@@ -14,8 +14,9 @@ public class StateFeaturesRepository
     {
         StateFeatures stateFeatures = new StateFeatures();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"Select FROM statefeatures WHERE createdAt = MAX(createdAt) AND customerTypeTitle = $customerTypeTitle";
-        command.Parameters.AddWithValue("$customerTypeTitle", type);
+        command.CommandText = @"Select * FROM statefeatures MAX(created_at) 
+            WHERE customer_type_title = @customer_type_title";
+        command.Parameters.AddWithValue("@customer_type_title", type);
         NpgsqlDataReader reader = command.ExecuteReader();
         if (reader.Read())
         {
@@ -32,14 +33,14 @@ public class StateFeaturesRepository
     public bool Update(long id, StateFeatures stateFeatures)
     {
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"UPDATE statefeatures SET customerTypeTitle = $customerTypeTitle, 
-         discount = $discount, upperLimit = $upperLimit, createdAt = $createdaAt
-         WHERE id = $id";
-        command.Parameters.AddWithValue("$id", id);
-        command.Parameters.AddWithValue("$customerTypeTitle", stateFeatures.CustomerTypeTitle);
-        command.Parameters.AddWithValue("$disciunt", stateFeatures.Discount);
-        command.Parameters.AddWithValue("$upperLimit", stateFeatures.UpperLimit);
-        command.Parameters.AddWithValue("$createdAt", DateTime.Now);
+        command.CommandText = @"UPDATE statefeatures SET customer_type_title = @customer_type_title, 
+         discount = @discount, upper_limit = @upper_limit, created_at = @createda_at
+         WHERE id = @id";
+        command.Parameters.AddWithValue("@id", id);
+        command.Parameters.AddWithValue("@customer_type_title", stateFeatures.CustomerTypeTitle);
+        command.Parameters.AddWithValue("@disciunt", stateFeatures.Discount);
+        command.Parameters.AddWithValue("@upper_limit", stateFeatures.UpperLimit);
+        command.Parameters.AddWithValue("@created_at", DateTime.Now);
 
         int nChanged = command.ExecuteNonQuery();
         return nChanged == 1;
@@ -49,8 +50,8 @@ public class StateFeaturesRepository
     {
         TicketPurchase ticketPurchase = new TicketPurchase();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"DELETE FROM statefeatures WHERE id = $id";
-        command.Parameters.AddWithValue("$id", id);
+        command.CommandText = @"DELETE FROM statefeatures WHERE id = @id";
+        command.Parameters.AddWithValue("@id", id);
         int nChanged = command.ExecuteNonQuery();
         if (nChanged == 0)
         {
@@ -66,24 +67,16 @@ public class StateFeaturesRepository
     {
         NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText =
-        @"INSERT INTO ticketPurchases (ustomerTypeTitle, discount, upperLimit, createdAt) 
-            VALUES ($customerTypeTitle, $discount, $upperLimit, $createdaAt);
-            
-            SELECT last_insert_rowid();
+        @"INSERT INTO statefeatures (customer_type_title, discount, upper_limit, created_at) 
+            VALUES (@customer_type_title, @discount, @upper_limit, @created_at)
+            RETURNING id
             ";
-        command.Parameters.AddWithValue("$customerTypeTitle", stateFeatures.CustomerTypeTitle);
-        command.Parameters.AddWithValue("$disciunt", stateFeatures.Discount);
-        command.Parameters.AddWithValue("$upperLimit", stateFeatures.UpperLimit);
-        command.Parameters.AddWithValue("$createdAt", DateTime.Now);
-        long newId = (long)command.ExecuteScalar();
-        if (newId == 0)
-        {
-            return 0;
-        }
-        else
-        {
-            return (int)newId; ;
-        }
+        command.Parameters.AddWithValue("@customer_type_title", stateFeatures.CustomerTypeTitle);
+        command.Parameters.AddWithValue("@disciunt", stateFeatures.Discount);
+        command.Parameters.AddWithValue("@upper_limit", stateFeatures.UpperLimit);
+        command.Parameters.AddWithValue("@created_at", DateTime.Now);
+        int newId = (int)command.ExecuteScalar();
+        return newId;
 
     }
 
@@ -91,11 +84,11 @@ public class StateFeaturesRepository
     private StateFeatures GetStateFeatures(NpgsqlDataReader reader)
     {
         StateFeatures stateFeatures = new StateFeatures();
-        stateFeatures.id = long.Parse(reader.GetString(0));
+        stateFeatures.id = reader.GetInt32(0);
         stateFeatures.CustomerTypeTitle = reader.GetString(1);
-        stateFeatures.Discount = Double.Parse(reader.GetString(2));
-        stateFeatures.UpperLimit = Double.Parse(reader.GetString(3));
-        stateFeatures.createdAt = DateTime.Parse(reader.GetString(4));
+        stateFeatures.Discount = reader.GetDouble(2);
+        stateFeatures.UpperLimit = reader.GetInt32(3);
+        stateFeatures.createdAt = reader.GetDateTime(4);
     
         return stateFeatures;
     }

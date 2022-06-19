@@ -1,6 +1,7 @@
 using System;
 public class ProcessControl : AbstrMovieTheater
 {
+    // place -> row ??? 
     public MovieTheater movieTheater;
 
     public ProcessControl(MovieTheater movieTheater, MovieTheaterComponents movieTheaterComponents) : base(movieTheaterComponents)
@@ -28,14 +29,17 @@ public class ProcessControl : AbstrMovieTheater
         movieTheater.ProcessBuyTicket();
         try
         {
-            long ticket_id = this.user.tickets[this.user.tickets.Capacity - 1].id;
+            int position = movieTheater.User.tickets.Count - 1;
+            if(position == -1){position = 0;}
+            long ticket_id = movieTheater.User.tickets[position].id;
+
             Console.WriteLine("Please, enter the following info\r\nCard number");
             string cardNumber = Console.ReadLine();
             Console.WriteLine("Expired date 'ex. : 05/22'");
             string expiredDateStr = Console.ReadLine();
             string[] date = expiredDateStr.Split('/');
             DateTime expiredDate = new DateTime(int.Parse(date[1]), int.Parse(date[0]), 1);
-            Console.WriteLine("CVV");
+            Console.WriteLine("CVV:");
             string cvv = Console.ReadLine();
 
             BankCard card = new BankCard
@@ -50,7 +54,7 @@ public class ProcessControl : AbstrMovieTheater
                 ticket_id = ticket_id,
                 createdAt = DateTime.Now,
                 price = 100,
-                customer_id = this.user.id,
+                customer_id = movieTheater.User.id,
                 payment_way = "credit card",
                 isCanceled = false
             };
@@ -61,19 +65,19 @@ public class ProcessControl : AbstrMovieTheater
 
             if (addSnack == "Yes")
             {
-                barSetprice = this.user.AddSnackToOrder(movieTheaterComponents);
+                barSetprice = movieTheater.User.AddSnackToOrder(movieTheaterComponents);
             }
 
             if (BankCardVerification(card, barSetprice + ticketPurchase.price) == 0)
             {
-                Console.WriteLine($"We are sorry, bot you cannot pay a ticket! Try another method of payment!");
+                Console.WriteLine($"We are sorry, but you cannot pay for a ticket! Try another method of payment!");
             }
             else
             {
                 long purchase_id = movieTheaterComponents.ticketPurchaseRepository.Insert(ticketPurchase);
-                this.user.SubscribeForSessionCncelingNotification(movieTheaterComponents);
+                movieTheater.User.SubscribeForSessionCncelingNotification(movieTheaterComponents);
 
-                this.user.PayForPurchase(ticketPurchase.price + barSetprice, movieTheaterComponents);
+                movieTheater.User.PayForPurchase(ticketPurchase.price + barSetprice, movieTheaterComponents);
             }
         }
         catch (Exception ex)

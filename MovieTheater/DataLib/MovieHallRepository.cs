@@ -119,33 +119,24 @@ public class MovieHallRepository
         NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText =
         @"INSERT INTO moviehalls (type_of_screen, row_amount, places_in_row_amount) 
-            VALUES (@type_of_screen, @row_amount, @places_in_row_amount);
-            
-            SELECT last_insert_rowid();
-            ";
+            VALUES (@type_of_screen, @row_amount, @places_in_row_amount)
+            RETURNING id";
         command.Parameters.AddWithValue("@hall_id", moviehall.hall_id);
         command.Parameters.AddWithValue("@type_of_screen", moviehall.typeOfScreen);
         command.Parameters.AddWithValue("@row_amount", moviehall.rowAmount);
         command.Parameters.AddWithValue("@places_in_row_amount", moviehall.placesInRowAmount);
-        long newId = (long)command.ExecuteScalar();
-        if (newId == 0)
-        {
-            return 0;
-        }
-        else
-        {
-            return (int)newId; ;
-        }
+        int newId = (int)command.ExecuteScalar();
+        return newId;
 
     }
 
     public MovieHall Getmoviehall(NpgsqlDataReader reader)
     {
         MovieHall moviehall = new MovieHall();
-        moviehall.hall_id = long.Parse(reader.GetString(0));
+        moviehall.hall_id = reader.GetInt32(0);
         moviehall.typeOfScreen = reader.GetString(1);
-        moviehall.rowAmount = int.Parse(reader.GetString(2));
-        moviehall.placesInRowAmount = int.Parse(reader.GetString(3));
+        moviehall.rowAmount = reader.GetInt32(2);
+        moviehall.placesInRowAmount = reader.GetInt32(3);
 
         return moviehall;
     }

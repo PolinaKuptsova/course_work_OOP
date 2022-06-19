@@ -1,16 +1,16 @@
 using System;
 public class Ticket
 {
-    public long id;
-    public long movieId;
+    public int id;
+    public int movieId;
     public string ticketNumber;
     public int place;
     public int row;
     public DateTime startMovie;
-    public long hallNumber;
+    public int hallNumber;
     public Movie movie;
 
-    public Ticket(long movieId, string ticketNumber, int place, int row, DateTime startMovie, long hallNumber)
+    public Ticket(int movieId, string ticketNumber, int place, int row, DateTime startMovie, int hallNumber)
     {
         this.movieId = movieId;
         this.ticketNumber = ticketNumber;
@@ -25,6 +25,12 @@ public class Ticket
 
     public override string ToString()
     {
-        return string.Format($"| #{ticketNumber} Hall #{hallNumber}\r\n| {movie.title} Time: {startMovie}");
+        return string.Format($"#{ticketNumber} Hall #{hallNumber}\r\nTime: {startMovie.ToString("d")}");
     }
 }
+
+
+/*//DateTime.ParseExact(reader.GetDate(5).ToString(), "yyyy-MM-dd", null);
+        Console.WriteLine(ticket.startMovie.ToString("o"));
+        Console.WriteLine(ticket.startMovie.ToString("d"));
+        Console.WriteLine(ticket.startMovie.Date.ToString());*/

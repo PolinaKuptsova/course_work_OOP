@@ -9,7 +9,7 @@ public class VipCustomerState : CustomerState
 
     private void Initialize()
     {
-        StateFeatures = stateFeaturesRepository.GetStateFeatures("vip");  
+        StateFeatures = this.StateFeaturesRepository.GetStateFeatures("vip");  
     }
 
     public override void PayForPurchase(double price)
@@ -22,4 +22,5 @@ public class VipCustomerState : CustomerState
     {
         return (1 - StateFeatures.Discount) * price;
     }
+
 }
