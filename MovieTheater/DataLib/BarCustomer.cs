@@ -18,7 +18,7 @@ public class BarCustomer : Customer
 
     public void MakeOrder(MovieBarSet barSet)
     {
-        Console.WriteLine($"You order is:\r\n {popcorn}\r\nDrink{beverage}\r\nGlasses{glasses}");
+        Console.WriteLine($"You order is:\r\nPopcorn: {popcorn}\r\nDrink: {beverage}\r\nGlasses: {glasses}\r\n");
     }
 
 }

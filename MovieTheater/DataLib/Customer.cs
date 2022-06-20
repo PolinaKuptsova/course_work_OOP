@@ -7,6 +7,7 @@ public class Customer : User, IObserver
     public List<Ticket> tickets;
     private CustomerState customerState; // to bd ???
     public CustomerState CustomerState { get => customerState; set => customerState = value; }
+    public MovieAssistant movieAssist;
 
     public Customer ()
     {
@@ -83,7 +84,8 @@ public class Customer : User, IObserver
             place = place,
             row = row,
             startMovie = session.start,
-            hallNumber = hall.hall_id
+            hallNumber = hall.hall_id,
+            session = session
         };
         
         newTicket.id = movieTheaterComponents.ticketRepository.Insert(newTicket);
@@ -97,29 +99,33 @@ public class Customer : User, IObserver
     {
         BarCustomer bc = new BarCustomer();
         MovieBarSet barSet = null;
-        Console.WriteLine("choose a set\r\nWe have : -small set\r\n-kid set\r\n-medium set\r\n-big set");
+        Console.WriteLine("choose a set\r\nWe have:\r\n-small set\r\n-kid set\r\n-medium set\r\n-big set");
         string set = Console.ReadLine();
         if (set == "small set")
         {
             barSet = new SmallMovieBarSet();
+            bc = new BarCustomer(barSet);
             bc.MakeOrder(barSet);
             return barSet.Price;
         }
         else if (set == "kid set")
         {
             barSet = new KidMovieBarSet();
+            bc = new BarCustomer(barSet);
             bc.MakeOrder(barSet);
             return barSet.Price;
         }
         else if (set == "medium set")
         {
             barSet = new MediumMovieBarSet();
+            bc = new BarCustomer(barSet);
             bc.MakeOrder(barSet);
             return barSet.Price;
         }
         else if (set == "big set")
         {
             barSet = new BigMovieBarSet();
+            bc = new BarCustomer(barSet);
             bc.MakeOrder(barSet);
             return barSet.Price;
         }
@@ -262,26 +268,23 @@ public class Customer : User, IObserver
         throw new Exception("No tickets yet!");
     }
 
-    public override void SubscribeForPremiereNotification(MovieTheaterComponents movieTheaterComponents)
+    public override void SubscribeForPremiereNotification(MovieAssistant assist, MovieTheaterComponents movieTheaterComponents)
     {
-        List<Customer> users = movieTheaterComponents.userRepository.GetAllByAccessLevel("moderator");
-        MovieAssistant assist = new MovieAssistant();
-        assist = assist.SetMovieAssistant(users[0]);
-        assist.NotifyMovieAdding += SendPremiereNotification;
+        this.movieAssist = assist;
+        this.movieAssist.NotifyMovieAdding += SendPremiereNotification;
+        Console.WriteLine("Stay tuned for premieres! You successfully subscribed!");
     }
 
-    public override void SubscribeForSessionCncelingNotification(MovieTheaterComponents movieTheaterComponents)
+    public override void SubscribeForSessionCancelingNotification(MovieAssistant assist, MovieTheaterComponents movieTheaterComponents)
     {
-        List<Customer> users = movieTheaterComponents.userRepository.GetAllByAccessLevel("moderator");
-        MovieAssistant assist = new MovieAssistant();
-        assist = assist.SetMovieAssistant(users[0]);
-        assist.NotifySessionCanceling += SendCancelSessionNotification;
+        this.movieAssist = assist;
+        this.movieAssist.NotifySessionCanceling += SendCancelSessionNotification;
+        Console.WriteLine("Stay tuned! You successfully subscribed!");
     }
-
 
     public void SendPremiereNotification(Movie newMovie)
     {
-        Console.WriteLine("New movie on tour screen! Hurry up to buy a ticket" + newMovie);
+        Console.WriteLine("New movie is on ours screens! Hurry up to buy a ticket" + newMovie);
     }
 
     public void SendCancelSessionNotification(Session session)

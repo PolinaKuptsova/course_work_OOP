@@ -1,7 +1,6 @@
 using System;
 public class ProcessControl : AbstrMovieTheater
 {
-    // place -> row ??? 
     public MovieTheater movieTheater;
 
     public ProcessControl(MovieTheater movieTheater, MovieTheaterComponents movieTheaterComponents) : base(movieTheaterComponents)
@@ -31,7 +30,7 @@ public class ProcessControl : AbstrMovieTheater
         {
             int position = movieTheater.User.tickets.Count - 1;
             if(position == -1){position = 0;}
-            long ticket_id = movieTheater.User.tickets[position].id;
+            Ticket ticket = movieTheater.User.tickets[position];
 
             Console.WriteLine("Please, enter the following info\r\nCard number");
             string cardNumber = Console.ReadLine();
@@ -51,12 +50,13 @@ public class ProcessControl : AbstrMovieTheater
 
             TicketPurchase ticketPurchase = new TicketPurchase
             {
-                ticket_id = ticket_id,
+                ticket_id = ticket.id,
                 createdAt = DateTime.Now,
                 price = 100,
                 customer_id = movieTheater.User.id,
                 payment_way = "credit card",
-                isCanceled = false
+                isCanceled = false,
+                session_id = ticket.session.id
             };
 
             Console.WriteLine("Do you want to add a snack to your order: (Yes/No)");
@@ -75,8 +75,6 @@ public class ProcessControl : AbstrMovieTheater
             else
             {
                 long purchase_id = movieTheaterComponents.ticketPurchaseRepository.Insert(ticketPurchase);
-                movieTheater.User.SubscribeForSessionCncelingNotification(movieTheaterComponents);
-
                 movieTheater.User.PayForPurchase(ticketPurchase.price + barSetprice, movieTheaterComponents);
             }
         }
@@ -89,16 +87,16 @@ public class ProcessControl : AbstrMovieTheater
     private int BankCardVerification(BankCard bankCard, double price)
     {
         Random random = new Random();
-        int bankResponse = random.Next(0, 1);
+        int bankResponse = 1;//random.Next(0, 2);
 
         if (bankResponse == 0)
         {
-            Console.WriteLine($"Not enough money on : bank card '{bankCard.CardNumber}' to pay {price}");
+            Console.WriteLine($"Not enough money on bank card '{bankCard.CardNumber}' to pay {price}.");
             return bankResponse;
         }
         else
         {
-            Console.WriteLine($"It is enough money on : bank card '{bankCard.CardNumber}' to pay {price}");
+            Console.WriteLine($"It is enough money on bank card '{bankCard.CardNumber}' to pay {price}.");
             return bankResponse;
         }
     }
@@ -168,8 +166,8 @@ public class ProcessControl : AbstrMovieTheater
         movieTheater.ProcessUpdateMyAccount();
     }
 
-    public override void ResetCommandInfo()
+    public override void ProcessLogOut()
     {
-        movieTheater.ResetCommandInfo();
+        movieTheater.ProcessLogOut();
     }
 }

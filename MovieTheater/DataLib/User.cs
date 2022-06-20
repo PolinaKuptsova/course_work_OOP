@@ -8,6 +8,7 @@ public abstract class User
     private string password;
     private string phoneNumber;
     public bool isBlocked;
+    public bool isSubscribed;
     public int age;
     public string accessLevel;
     private double balance;
@@ -89,6 +90,6 @@ public abstract class User
     public abstract void UpdateMyAccount(MovieTheaterComponents movieTheaterComponents);
     public abstract void DeleteMyAccount(MovieTheaterComponents movieTheaterComponents);
     public abstract void ShowMyAccount(MovieTheaterComponents movieTheaterComponents);
-    public abstract void SubscribeForPremiereNotification(MovieTheaterComponents movieTheaterComponents);
-    public abstract void SubscribeForSessionCncelingNotification(MovieTheaterComponents movieTheaterComponents);
+    public abstract void SubscribeForPremiereNotification(MovieAssistant assist, MovieTheaterComponents movieTheaterComponents);
+    public abstract void SubscribeForSessionCancelingNotification(MovieAssistant assist, MovieTheaterComponents movieTheaterComponents);
 }

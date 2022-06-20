@@ -116,8 +116,8 @@ public class TicketPurchaseRepository
     {
         NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText =
-        @"INSERT INTO ticketPurchases (ticket_id, created_at, price, customer_id, payment_way, is_canceled) 
-            VALUES (@ticket_id, @created_at, @price, @customer_id, @payment_way, @is_canceled)
+        @"INSERT INTO ticketPurchases (ticket_id, created_at, price, customer_id, payment_way, is_canceled,session_id) 
+            VALUES (@ticket_id, @created_at, @price, @customer_id, @payment_way, @is_canceled, @session_id)
             RETURNING id
             ";
         command.Parameters.AddWithValue("@ticket_id", ticketPurchase.ticket_id);
@@ -125,7 +125,8 @@ public class TicketPurchaseRepository
         command.Parameters.AddWithValue("@price", ticketPurchase.price);
         command.Parameters.AddWithValue("@customer_id", ticketPurchase.customer_id);
         command.Parameters.AddWithValue("@payment_way", ticketPurchase.payment_way);
-        command.Parameters.AddWithValue("@is_canceled", ticketPurchase.isCanceled);
+        command.Parameters.AddWithValue("@is_canceled", ticketPurchase.isCanceled == true ? 1 : 0);
+        command.Parameters.AddWithValue("@session_id", ticketPurchase.session_id);
         int newId = (int)command.ExecuteScalar();
         return newId;
 
@@ -141,6 +142,7 @@ public class TicketPurchaseRepository
         ticketPurchase.customer_id = reader.GetInt64(4);
         ticketPurchase.payment_way = reader.GetString(5);
         ticketPurchase.isCanceled = reader.GetInt32(6) == 1 ? true : false;
+        ticketPurchase.session_id = reader.GetInt32(1);
 
         return ticketPurchase;
     }

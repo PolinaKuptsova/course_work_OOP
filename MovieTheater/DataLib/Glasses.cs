@@ -12,7 +12,7 @@ public class Glasses : SetComponents
     {
         this.sizes = new int[]{1,2};
         this.colors = new string[]{"black", "white", "pink", "blue"};
-        this.types = new string[]{"normal", "For short-sighted person", "For long-sighted person"};
+        this.types = new string[]{"normal", "for short-sighted person", "for long-sighted person"};
 
     }
 
@@ -26,16 +26,16 @@ public class Glasses : SetComponents
     }
     public void TypeDescription()
     {
-        Console.WriteLine("Types:\r\n -Normal\r\n-For short-sighted person\r\n-For long-sighted person");
+        Console.WriteLine("Types:\r\n-normal\r\n-for short-sighted person\r\n-for long-sighted person");
     }
     public void GetColors()
     {
-        Console.WriteLine("Colors:\r\n -black\r\n-white\r\n-pik\r\n-blue");
+        Console.WriteLine("Colors:\r\n-black\r\n-white\r\n-pink\r\n-blue");
     }
 
     public override string ToString()
     {
-        return string.Format($"Size: {size} Color {color} Type {glassesType}");
+        return string.Format($"size: #{size}, color {color}, type {glassesType}");
     }
 
     public Glasses ChooseGlasses(Glasses glasses)

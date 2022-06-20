@@ -29,16 +29,15 @@ public abstract class AbstrMovieTheater
     public void SetCommandInfo()
     {
         this.allCommands = new string[] {"block user","add assist","delete assist", "delete movie","add movie", "cancel session", "get all customers",
-            "get all movies","show my tickets","update my account", "show my account", "delete my account", "buy ticket", "exit", "log in",
+            "get all movies","show my tickets","update my account", "show my account", "delete my account", "buy ticket", "exit", "log in", "log out",
             "registrate", "show billboard"};
         this.allProcesses = new List<Action>{ProcessBlockUser, ProcessAddMovieAssist, ProcessDeleteMovieAssist,
             ProcessDeleteMovie, ProcessAddMovie, ProcessCancelSession, ProcessGetAllCustomers,
             ProcessGetAllMovies, ProcessShowMyTickets, ProcessUpdateMyAccount, ProcessShowMyAccount,
-            ProcessDeleteMyAccount, ProcessBuyTicket, ProcessExit, ProcessLogIn,
+            ProcessDeleteMyAccount, ProcessBuyTicket, ProcessExit, ProcessLogIn, ProcessLogOut,
             ProcessRegistrate, ProcessShowBillboard};
     }
 
-    public abstract void ResetCommandInfo();
     public abstract void ProcessBlockUser();
     public abstract void ProcessAddMovieAssist();
     public abstract void ProcessDeleteMovieAssist();
@@ -54,6 +53,7 @@ public abstract class AbstrMovieTheater
     public abstract void ProcessShowMyAccount();
     public abstract void ProcessExit();
     public abstract void ProcessLogIn();
+    public abstract void ProcessLogOut();
     public abstract void ProcessRegistrate();
     public abstract void ProcessShowBillboard();
 }

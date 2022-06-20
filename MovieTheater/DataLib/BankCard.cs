@@ -32,7 +32,7 @@ public class BankCard
         }
         set
         {
-            if (value== null)
+            if (value != null)
             {
                 expiredDate = value;
             }
@@ -48,7 +48,7 @@ public class BankCard
         }
         set
         {
-            if (string.IsNullOrEmpty(value))
+            if (!string.IsNullOrEmpty(value))
             {
                 cardNumber = value;
             }

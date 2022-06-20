@@ -7,7 +7,7 @@ public class Popcorn : SetComponents
 
     public Popcorn()
     {
-        string [] popcornMenu = new string[]{"cheese popcorn", "beacon popcorn", "caramel popcorn"};
+        this.popcornMenu = new string[]{"cheese popcorn", "beacon popcorn", "caramel popcorn"};
     }
 
     public Popcorn(string setQuality, string movieThemes, bool isRecyclablePackage) : base(setQuality, movieThemes, isRecyclablePackage)
@@ -16,7 +16,7 @@ public class Popcorn : SetComponents
 
     public override string ToString()
     {
-        return string.Format($"Flavor: {flavor} Extra Cheese {extraCheese}");
+        return string.Format($"{flavor} with extra Cheese: {extraCheese}");
     }
 
     public void GetPopcornMenu()
@@ -26,9 +26,10 @@ public class Popcorn : SetComponents
 
     public Popcorn ChoosePopcorn()
     {
-        Console.WriteLine("Please choose popcorn");
+        Console.WriteLine("Please, choose popcorn. ");
         this.GetPopcornMenu();
         string popcornStr = Console.ReadLine();
+
         foreach (string p in this.popcornMenu)
         {
             if (popcornStr == p)

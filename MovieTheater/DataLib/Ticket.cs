@@ -8,7 +8,7 @@ public class Ticket
     public int row;
     public DateTime startMovie;
     public int hallNumber;
-    public Movie movie;
+    public Session session;
 
     public Ticket(int movieId, string ticketNumber, int place, int row, DateTime startMovie, int hallNumber)
     {

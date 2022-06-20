@@ -61,6 +61,38 @@ public class UserRepository
         return users;
     }
 
+    public List<Customer> GetCustomersSubscribers()
+    {
+        List<Customer> subscribers = new List<Customer>();
+        NpgsqlCommand command = this.connection.CreateCommand();
+        command.CommandText = @"SELECT * FROM users WHERE is_subscribed = '1'";
+        NpgsqlDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            Customer user = GetUser(reader);
+            subscribers.Add(user);
+        }
+        reader.Close();
+        return subscribers;
+    }
+
+        public List<Customer> GetCustomersForSession(int session_id)
+    {
+        List<Customer> subscribers = new List<Customer>();
+        NpgsqlCommand command = this.connection.CreateCommand();
+        command.CommandText = @"SELECT users.name , users.password, users.phone_number, users.is_blocked, 
+            users.age, users.access_level, users.balance, users.is_subscribedFROM users, ticketpurchases Where ticketpurchases.session_id = @session_id
+            AND users.id = ticketpurchases.customer_id; ";
+        NpgsqlDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            Customer user = GetUser(reader);
+            subscribers.Add(user);
+        }
+        reader.Close();
+        return subscribers;
+    }
+
     public List<Customer> GetPage(int pageNumber, long pageSize)
     {
         if (pageNumber < 1)
@@ -181,8 +213,8 @@ public class UserRepository
     {
         NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText =
-        @"INSERT INTO users (name, password, phone_number, is_blocked, age, access_level, balance) 
-            VALUES (@name, @password, @phone_number, @is_blocked, @age, @access_level, @balance) RETURNING id;";
+        @"INSERT INTO users (name, password, phone_number, is_blocked, age, access_level, balance, is_subscribed) 
+            VALUES (@name, @password, @phone_number, @is_blocked, @age, @access_level, @balance, @is_subscribed) RETURNING id;";
         string hash = Authentication.GetHash(user.Password);
         command.Parameters.AddWithValue("@name", user.Name);
         command.Parameters.AddWithValue("@password", hash);
@@ -191,6 +223,7 @@ public class UserRepository
         command.Parameters.AddWithValue("@age", user.age);
         command.Parameters.AddWithValue("@access_level", user.accessLevel);
         command.Parameters.AddWithValue("@balance", user.Balance);
+        command.Parameters.AddWithValue("@is_subscribed", user.isSubscribed == false ? 0 : 1);
         
         int newId = (int)command.ExecuteScalar();
         return newId;
@@ -207,6 +240,7 @@ public class UserRepository
         user.isBlocked = reader.GetInt32(4) == 0 ? false : true;
         user.accessLevel = reader.GetString(6);
         user.Balance = reader.GetDouble(7);
+        user.isSubscribed = reader.GetInt32(8) == 0 ? false : true;
 
         return user;
     }

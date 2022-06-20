@@ -3,12 +3,27 @@ using System.Collections.Generic;
 
 public class MovieTheater : AbstrMovieTheater
 {
-    private MovieTheaterComponents components;
-
     public MovieTheater(MovieTheaterComponents movieTheaterComponents) : base(movieTheaterComponents)
     {
         ShowInfoForUser();
         SetCommandInfo();
+    }
+
+    public override void ProcessLogOut()
+    {
+        try
+        {
+            if (this.User != null)
+            {
+                this.User = null;
+                return;
+            }
+            throw new Exception("First log in!");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
     }
 
     public override void ProcessAddMovie()
@@ -21,6 +36,7 @@ public class MovieTheater : AbstrMovieTheater
                 {
                     MovieAssistant assist = new MovieAssistant();
                     assist.SetMovieAssistant(this.User);
+                    GetSubscribersForMovieAdding(assist);
                     assist.AddMovie(this.movieTheaterComponents);
                     return;
                 }
@@ -32,6 +48,16 @@ public class MovieTheater : AbstrMovieTheater
         {
             Console.WriteLine(ex.Message);
         }
+    }
+
+    private void GetSubscribersForMovieAdding(MovieAssistant assistant)
+    {
+        List<Customer> customers = this.movieTheaterComponents.userRepository.GetCustomersSubscribers();
+        foreach(Customer sub in customers)
+        {
+            sub.SubscribeForPremiereNotification(assistant, this.movieTheaterComponents);
+        }
+
     }
 
     public override void ProcessAddMovieAssist()
@@ -120,6 +146,19 @@ public class MovieTheater : AbstrMovieTheater
         {
             Console.WriteLine(ex.Message);
         }
+    }
+    
+    
+    // movieTheater.User.SubscribeForSessionCncelingNotification(movieTheaterComponents);
+    
+    private void GetSubscribersForSessionCanceling(MovieAssistant assistant, Session session)
+    {
+        List<Customer> customers = this.movieTheaterComponents.userRepository.GetCustomersForSession(session.id);
+        foreach(Customer sub in customers)
+        {
+            sub.SubscribeForSessionCancelingNotification(assistant, this.movieTheaterComponents);
+        }
+
     }
 
     public override void ProcessDeleteMovie()
@@ -283,11 +322,11 @@ public class MovieTheater : AbstrMovieTheater
     private static Customer LogIn(MovieTheaterComponents movieTheater)
     {
         Console.WriteLine("Enter your name");
-        string name = Console.ReadLine();
+        string name = "Polina";//Console.ReadLine();
         Customer user = Authentication.ValidateUserName(name, movieTheater.userRepository);
         
         Console.WriteLine("Enter your password");
-        string password = Console.ReadLine();
+        string password = "123";//Console.ReadLine();
         bool hashVerified = Authentication.VerifyHash(password, user.Password);
 
         if (user != null && hashVerified)
@@ -304,11 +343,7 @@ public class MovieTheater : AbstrMovieTheater
             if (this.User == null)
             {
                 this.User = MovieTheater.Registrate(this.movieTheaterComponents);
-                Console.WriteLine("You have been successfully registrated!\r\nDo you want to stay inform about premier? 'Yes/No'");   
-                string subscribe = Console.ReadLine();
-                if(subscribe == "Yes"){
-                    this.User.SubscribeForPremiereNotification(this.movieTheaterComponents);
-                }
+                Console.WriteLine("You have been successfully registrated!");
                 ShowInfoForCustomer();
                 return;
             }
@@ -324,22 +359,16 @@ public class MovieTheater : AbstrMovieTheater
     {
         Console.WriteLine("Please, enter info about yourself:");
         Console.Write("Name: ");
-        string name = "Kate";//Console.ReadLine();
-
-        /*User user = Authentication.ValidateUserName(name, movieTheater.userRepository);
-        if (user != null)
-        {
-            throw new Exception("Such username '{name}' is already exists!");
-        }*/
+        string name = "Nicola";//Console.ReadLine();
 
         Console.Write("\r\nPassword: ");
         string password = "123";//Console.ReadLine();
 
         Console.Write("\r\nPhone number: ");
-        string phoneNumber = "21564987";//Console.ReadLine();
+        string phoneNumber = "153454";//Console.ReadLine();
 
         Console.Write("\r\nAge: ");
-        string ageInput = "28";//Console.ReadLine();
+        string ageInput = "16";//Console.ReadLine();
 
         if (!Int32.TryParse(ageInput, out int i))
         {
@@ -351,12 +380,16 @@ public class MovieTheater : AbstrMovieTheater
             throw new Exception($"Incorrect age '{ageInput}'. Please try again!");
         }
 
+        Console.WriteLine("Do you want to stay inform about premier? 'Yes/No'");
+        string subscribe = "Yes";//Console.ReadLine();
+
         Customer customer = new Customer(movieTheater.stateFeaturesRepository);
         customer.Name = name;
         customer.Password = password;
         customer.PhoneNumber = phoneNumber;
         customer.age = age;
         customer.accessLevel = "customer";
+        if (subscribe == "Yes"){customer.isSubscribed = true;}
 
         long id = 0 ;
         id = movieTheater.userRepository.Insert(customer); 
@@ -446,10 +479,6 @@ public class MovieTheater : AbstrMovieTheater
         }
     }
 
-    public override void ResetCommandInfo()
-    {
-        this.User = null;
-    }
     private void ShowInfoForUser()
     {
         Console.WriteLine("Welcome to the Movie Theater!\r\nPlease choose an operation:\r\n-log in\r\n-show billboard\r\n-exit\r\n-registrate\r\nFor more,please, log in!");
@@ -457,7 +486,7 @@ public class MovieTheater : AbstrMovieTheater
 
     private void ShowInfoForCustomer()
     {
-        Console.WriteLine("Now you can choose an operation: \r\n-show my tickets\r\n-buy ticket\r\n-show my account\r\n-update my account\r\n-delete my account\r\n-exit\r\n");
+        Console.WriteLine("Now you can choose an operation: \r\n-show my tickets\r\n-buy ticket\r\n-show my account\r\n-update my account\r\n-delete my account\r\n-log out\r\n-exit\r\n");
     }
     private void ShowInfoForAssist()
     {

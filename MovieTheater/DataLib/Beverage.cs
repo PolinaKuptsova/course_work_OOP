@@ -9,7 +9,7 @@ public class Beverage : SetComponents
 
     public Beverage()
     {
-        string[] menu = new string[] { "juice", "mineral water", "coffee", "tea", "nonalcoholic beer" };
+        this.menu = new string[] { "juice", "mineral water", "coffee", "tea", "nonalcoholic beer" };
     }
 
     public Beverage(string setQuality, string movieThemes, bool isRecyclablePackage) : base(setQuality, movieThemes, isRecyclablePackage)
@@ -18,7 +18,7 @@ public class Beverage : SetComponents
 
     public override string ToString()
     {
-        return string.Format($"Type {type} Cold: {isCold}");
+        return string.Format($"{type}. cold: {isCold}");
     }
     public void GetBevarageMenu()
     {
