@@ -80,9 +80,11 @@ public class UserRepository
     {
         List<Customer> subscribers = new List<Customer>();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"SELECT users.name , users.password, users.phone_number, users.is_blocked, 
-            users.age, users.access_level, users.balance, users.is_subscribedFROM users, ticketpurchases Where ticketpurchases.session_id = @session_id
-            AND users.id = ticketpurchases.customer_id; ";
+        command.CommandText = @"SELECT DISTINCT users.id, users.name , users.password, users.phone_number, users.is_blocked, 
+            users.age, users.access_level, users.balance, users.is_subscribed FROM users, ticketpurchases 
+			Where ticketpurchases.session_id = @session_id
+            AND users.id = ticketpurchases.customer_id";
+        command.Parameters.AddWithValue("@session_id", session_id);
         NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
@@ -146,7 +148,7 @@ public class UserRepository
         NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"UPDATE users SET is_blocked = @is_blocked WHERE id = @id";
         command.Parameters.AddWithValue("@id", id);
-        command.Parameters.AddWithValue("is_blocked", isBlocked);
+        command.Parameters.AddWithValue("is_blocked", isBlocked == false ? 0 : 1);
 
         int nChanged = command.ExecuteNonQuery();
         return nChanged == 1;

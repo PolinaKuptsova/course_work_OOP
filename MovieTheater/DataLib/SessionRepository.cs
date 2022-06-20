@@ -78,10 +78,10 @@ public class SessionRepository
     public bool CancelSession(long id, bool isCanceled)
     {
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"UPDATE Sessions SET is_canaceled = @is_canceled,
+        command.CommandText = @"UPDATE Sessions SET is_canceled = @is_canceled
          WHERE id = @id";
         command.Parameters.AddWithValue("@id", id);
-        command.Parameters.AddWithValue("@is_canceled", isCanceled);
+        command.Parameters.AddWithValue("@is_canceled", isCanceled == true ? 1 : 0);
 
         int nChanged = command.ExecuteNonQuery();
         return nChanged == 1;

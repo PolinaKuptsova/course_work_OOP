@@ -23,14 +23,11 @@ public static class ConsoleApp{
 
     public static void Run(AbstrMovieTheater processControl)
     {
-        string [] c = new string []{"log in", "add movie"};
-
-        //while (true)
-        for(int y = 0 ; y < c.Length; y++)
+        while (true)
         {
             bool found = false;
             Console.WriteLine("Enter command: ");
-            string command = c[y];//Console.ReadLine();
+            string command = Console.ReadLine();
             for (int i = 0; i < processControl.allCommands.Length; i++)
             {
                 if (command == processControl.allCommands[i])

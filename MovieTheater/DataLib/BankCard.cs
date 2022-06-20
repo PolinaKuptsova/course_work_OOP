@@ -32,11 +32,7 @@ public class BankCard
         }
         set
         {
-            if (value != null)
-            {
-                expiredDate = value;
-            }
-
+            expiredDate = value;
         }
     }
 

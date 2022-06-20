@@ -16,7 +16,12 @@ public class Customer : User, IObserver
     public Customer(StateFeaturesRepository stateFeaturesRepository)
     {
         this.CustomerState = new BasicCustomerState(this, stateFeaturesRepository); 
-    }    
+    }  
+
+    public void SetCustomerState(StateFeaturesRepository stateFeaturesRepository)
+    {
+        this.CustomerState = new BasicCustomerState(this, stateFeaturesRepository); 
+    }  
     
     public override string ToString()
     {
@@ -272,14 +277,12 @@ public class Customer : User, IObserver
     {
         this.movieAssist = assist;
         this.movieAssist.NotifyMovieAdding += SendPremiereNotification;
-        Console.WriteLine("Stay tuned for premieres! You successfully subscribed!");
     }
 
     public override void SubscribeForSessionCancelingNotification(MovieAssistant assist, MovieTheaterComponents movieTheaterComponents)
     {
         this.movieAssist = assist;
         this.movieAssist.NotifySessionCanceling += SendCancelSessionNotification;
-        Console.WriteLine("Stay tuned! You successfully subscribed!");
     }
 
     public void SendPremiereNotification(Movie newMovie)

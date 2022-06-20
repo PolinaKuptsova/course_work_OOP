@@ -53,7 +53,7 @@ public class MovieTheater : AbstrMovieTheater
     private void GetSubscribersForMovieAdding(MovieAssistant assistant)
     {
         List<Customer> customers = this.movieTheaterComponents.userRepository.GetCustomersSubscribers();
-        foreach(Customer sub in customers)
+        foreach (Customer sub in customers)
         {
             sub.SubscribeForPremiereNotification(assistant, this.movieTheaterComponents);
         }
@@ -133,7 +133,6 @@ public class MovieTheater : AbstrMovieTheater
                 if (this.User.accessLevel != "customer")
                 {
                     MovieAssistant assist = new MovieAssistant();
-                    assist.SetMovieAssistant(this.User);
                     assist.CancelSession(this.movieTheaterComponents);
                     return;
                 }
@@ -146,19 +145,6 @@ public class MovieTheater : AbstrMovieTheater
         {
             Console.WriteLine(ex.Message);
         }
-    }
-    
-    
-    // movieTheater.User.SubscribeForSessionCncelingNotification(movieTheaterComponents);
-    
-    private void GetSubscribersForSessionCanceling(MovieAssistant assistant, Session session)
-    {
-        List<Customer> customers = this.movieTheaterComponents.userRepository.GetCustomersForSession(session.id);
-        foreach(Customer sub in customers)
-        {
-            sub.SubscribeForSessionCancelingNotification(assistant, this.movieTheaterComponents);
-        }
-
     }
 
     public override void ProcessDeleteMovie()
@@ -214,7 +200,7 @@ public class MovieTheater : AbstrMovieTheater
             if (this.User != null)
             {
                 this.User.DeleteMyAccount(this.movieTheaterComponents);
-                if(this.User.deleted)
+                if (this.User.deleted)
                 {
                     this.User = null;
                 }
@@ -239,7 +225,7 @@ public class MovieTheater : AbstrMovieTheater
             Console.WriteLine(ex.Message);
         }
     }
-        private static void Exit()
+    private static void Exit()
     {
         Console.WriteLine("Goodbye");
         Environment.Exit(1);
@@ -299,7 +285,6 @@ public class MovieTheater : AbstrMovieTheater
             {
                 this.User = MovieTheater.LogIn(this.movieTheaterComponents);
 
-                ShowInfoForCustomer();
                 if (this.User.accessLevel == "admin")
                 {
                     ShowInfoForAdmin();
@@ -307,6 +292,10 @@ public class MovieTheater : AbstrMovieTheater
                 else if (this.User.accessLevel == "moderator")
                 {
                     ShowInfoForAssist();
+                }
+                else
+                {
+                    ShowInfoForCustomer();
                 }
             }
             else
@@ -322,11 +311,11 @@ public class MovieTheater : AbstrMovieTheater
     private static Customer LogIn(MovieTheaterComponents movieTheater)
     {
         Console.WriteLine("Enter your name");
-        string name = "Polina";//Console.ReadLine();
+        string name = Console.ReadLine();
         Customer user = Authentication.ValidateUserName(name, movieTheater.userRepository);
-        
+
         Console.WriteLine("Enter your password");
-        string password = "123";//Console.ReadLine();
+        string password = Console.ReadLine();
         bool hashVerified = Authentication.VerifyHash(password, user.Password);
 
         if (user != null && hashVerified)
@@ -359,16 +348,16 @@ public class MovieTheater : AbstrMovieTheater
     {
         Console.WriteLine("Please, enter info about yourself:");
         Console.Write("Name: ");
-        string name = "Nicola";//Console.ReadLine();
+        string name = Console.ReadLine();
 
         Console.Write("\r\nPassword: ");
-        string password = "123";//Console.ReadLine();
+        string password = Console.ReadLine();
 
         Console.Write("\r\nPhone number: ");
-        string phoneNumber = "153454";//Console.ReadLine();
+        string phoneNumber = Console.ReadLine();
 
         Console.Write("\r\nAge: ");
-        string ageInput = "16";//Console.ReadLine();
+        string ageInput = Console.ReadLine();
 
         if (!Int32.TryParse(ageInput, out int i))
         {
@@ -381,7 +370,7 @@ public class MovieTheater : AbstrMovieTheater
         }
 
         Console.WriteLine("Do you want to stay inform about premier? 'Yes/No'");
-        string subscribe = "Yes";//Console.ReadLine();
+        string subscribe = Console.ReadLine();
 
         Customer customer = new Customer(movieTheater.stateFeaturesRepository);
         customer.Name = name;
@@ -389,14 +378,11 @@ public class MovieTheater : AbstrMovieTheater
         customer.PhoneNumber = phoneNumber;
         customer.age = age;
         customer.accessLevel = "customer";
-        if (subscribe == "Yes"){customer.isSubscribed = true;}
+        if (subscribe == "Yes") { customer.isSubscribed = true; }
 
-        long id = 0 ;
-        id = movieTheater.userRepository.Insert(customer); 
-        if (id != 0)
-        {
-            return movieTheater.userRepository.GetById(id);
-        }
+        long id = 0;
+        id = movieTheater.userRepository.Insert(customer);
+        if (id != 0) { return movieTheater.userRepository.GetById(id); }
         throw new Exception("Registration failed!");
     }
 
@@ -426,7 +412,7 @@ public class MovieTheater : AbstrMovieTheater
         }
         throw new Exception($"Unfortunatelly, there is no movies on avalible now.");
     }
-    
+
     public override void ProcessShowMyAccount()
     {
         try

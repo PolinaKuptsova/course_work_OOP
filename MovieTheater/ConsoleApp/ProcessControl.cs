@@ -31,6 +31,7 @@ public class ProcessControl : AbstrMovieTheater
             int position = movieTheater.User.tickets.Count - 1;
             if(position == -1){position = 0;}
             Ticket ticket = movieTheater.User.tickets[position];
+            movieTheater.User.SetCustomerState(movieTheaterComponents.stateFeaturesRepository);
 
             Console.WriteLine("Please, enter the following info\r\nCard number");
             string cardNumber = Console.ReadLine();
