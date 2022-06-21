@@ -11,9 +11,9 @@ public class MovieTheaterComponents
     public MovieTheaterComponents()
     { }
 
-    public MovieTheaterComponents( MovieHallRepository movieHallRepository, 
-        UserRepository userRepository, 
-        MovieRepository movieRepository, TicketRepository ticketRepository, 
+    public MovieTheaterComponents(MovieHallRepository movieHallRepository,
+        UserRepository userRepository,
+        MovieRepository movieRepository, TicketRepository ticketRepository,
         SessionRepository sessionRepository, TicketPurchaseRepository ticketPurchaseRepository,
         StateFeaturesRepository stateFeaturesRepository)
     {

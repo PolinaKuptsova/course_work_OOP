@@ -147,7 +147,7 @@ public class TicketRepository
         command.Parameters.AddWithValue("@row", ticket.row);
         command.Parameters.AddWithValue("@start_movie", ticket.startMovie);
         command.Parameters.AddWithValue("@hall_number", ticket.hallNumber);
-        
+
         int newId = (int)command.ExecuteScalar();
         return newId;
 
@@ -180,7 +180,7 @@ public class TicketRepository
         ticket.ticketNumber = reader.GetString(2);
         ticket.place = reader.GetInt32(3);
         ticket.row = reader.GetInt32(4);
-        ticket.startMovie = reader.GetDateTime(5); 
+        ticket.startMovie = reader.GetDateTime(5);
         ticket.hallNumber = reader.GetInt32(6);
 
         return ticket;

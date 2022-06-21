@@ -10,7 +10,7 @@ public class MovieHall : Room
     public string lightningSystem;
     public string audioSystem;
     public int amountOfAdditionalSeats;
-    public string [,] places;
+    public string[,] places;
 
     public string TypeOfScreen
     {
@@ -45,13 +45,14 @@ public class MovieHall : Room
     {
         List<Customer> customers = movieTheaterComponents.userRepository.GetAllByAccessLevel("moderator");
         Console.WriteLine("Schedule for {DateTime.Now}");
-        int hour = 0;        
-        foreach(Customer c in customers){
-            if(!c.isBlocked)
+        int hour = 0;
+        foreach (Customer c in customers)
+        {
+            if (!c.isBlocked)
             {
-                DateTime d = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day,hour,0,0);
+                DateTime d = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, hour, 0, 0);
                 Console.WriteLine($"{c.Name} : shifts due to {d.ToString("d")}");
-                hour+=2;
+                hour += 2;
             }
         }
     }

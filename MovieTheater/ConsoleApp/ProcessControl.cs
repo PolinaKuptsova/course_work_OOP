@@ -29,7 +29,7 @@ public class ProcessControl : AbstrMovieTheater
         try
         {
             int position = movieTheater.User.tickets.Count - 1;
-            if(position == -1){position = 0;}
+            if (position == -1) { position = 0; }
             Ticket ticket = movieTheater.User.tickets[position];
             movieTheater.User.SetCustomerState(movieTheaterComponents.stateFeaturesRepository);
 

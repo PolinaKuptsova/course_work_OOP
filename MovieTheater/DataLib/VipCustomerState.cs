@@ -1,5 +1,5 @@
 using System;
-public class VipCustomerState : CustomerState 
+public class VipCustomerState : CustomerState
 {
     public VipCustomerState(CustomerState state)
     {
@@ -9,12 +9,12 @@ public class VipCustomerState : CustomerState
 
     private void Initialize()
     {
-        StateFeatures = this.StateFeaturesRepository.GetStateFeatures("vip");  
+        StateFeatures = this.StateFeaturesRepository.GetStateFeatures("vip");
     }
 
     public override void PayForPurchase(double price)
     {
-        double newPrice = CalcCheck(price);        
+        double newPrice = CalcCheck(price);
         this.Customer.Balance += newPrice;
     }
 

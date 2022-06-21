@@ -1,5 +1,5 @@
 public abstract class SetComponents
-{  
+{
     public string setQuality;
     public string movieThemes;
     public bool isRecyclablePackage;
@@ -18,6 +18,4 @@ public abstract class SetComponents
     {
         return string.Format($" Movie themes: {movieThemes} Recyclable: '{isRecyclablePackage}' ");
     }
-    // abstract public void ShowInfo();
-
 }

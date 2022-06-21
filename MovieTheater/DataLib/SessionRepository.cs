@@ -1,5 +1,5 @@
 using System;
-using Npgsql; 
+using Npgsql;
 using System.Collections.Generic;
 
 public class SessionRepository
@@ -113,7 +113,7 @@ public class SessionRepository
         NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"SELECT * FROM sessions WHERE movie_id = @movie_id";
         command.Parameters.AddWithValue("@movie_id", movie_id);
-        NpgsqlDataReader reader  = command.ExecuteReader();
+        NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             sessions.Add(GetSession(reader));
@@ -163,7 +163,7 @@ public class SessionRepository
         NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"Select FROM sessions WHERE start_movie = @movie_time";
         command.Parameters.AddWithValue("@movie_time", movieTime);
-        NpgsqlDataReader reader  = command.ExecuteReader();
+        NpgsqlDataReader reader = command.ExecuteReader();
         if (reader.Read())
         {
             session = GetSession(reader);
@@ -183,7 +183,7 @@ public class SessionRepository
         command.CommandText = @"SELECT * FROM sessions WHERE movie_id = @movie_id 
             AND start_movie >= @chosen_day";
         command.Parameters.AddWithValue("@movie_id", movie_id);
-        command.Parameters.AddWithValue("@chosen_day", new DateTime(2022,06,16));
+        command.Parameters.AddWithValue("@chosen_day", new DateTime(2022, 06, 16));
         NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
@@ -193,7 +193,7 @@ public class SessionRepository
         reader.Close();
         return sessions;
     }
-    public Session GetSession(NpgsqlDataReader reader )
+    public Session GetSession(NpgsqlDataReader reader)
     {
         Session Session = new Session();
         Session.id = reader.GetInt32(0);

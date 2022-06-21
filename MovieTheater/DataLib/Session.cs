@@ -1,7 +1,7 @@
 using System;
 public class Session
 {
-    public int id; 
+    public int id;
     public int movie_id;
     public int hall_id;
     public DateTime start;

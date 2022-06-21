@@ -2,7 +2,7 @@ using System;
 
 public class SmallMovieBarSet : MovieBarSet
 {
-        public override double Price
+    public override double Price
     {
         get
         {
@@ -24,7 +24,7 @@ public class SmallMovieBarSet : MovieBarSet
         b.setQuality = "low";
         b.ChooseBevarage();
         return b;
-        
+
     }
 
     public override Popcorn AddPopcorn()

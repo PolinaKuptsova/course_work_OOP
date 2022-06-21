@@ -20,7 +20,7 @@ public sealed class Admin : MovieAssistant
             accessLevel = user.accessLevel,
             age = user.age,
             Balance = user.Balance,
-            CustomerState = this.CustomerState 
+            CustomerState = this.CustomerState
         };
     }
 
@@ -30,20 +30,20 @@ public sealed class Admin : MovieAssistant
         string userName = Console.ReadLine();
         List<Customer> users = movieTheaterComponents.userRepository.GetAll();
         Customer user = new Customer();
-        if(users.Count > 0)
+        if (users.Count > 0)
         {
-            foreach(Customer us in users)
+            foreach (Customer us in users)
             {
-                if(userName == us.Name)
+                if (userName == us.Name)
                 {
                     user = us;
                 }
             }
         }
-        if(user.id == 0){throw new Exception($"No such user '{userName}' Registrate first!");}
+        if (user.id == 0) { throw new Exception($"No such user '{userName}' Registrate first!"); }
 
         bool isAdded = movieTheaterComponents.userRepository.UpdateUserAccessLevel(user.id, "moderator");
-        if(isAdded)
+        if (isAdded)
         {
             Console.WriteLine($"New assistant {userName} has been added!");
         }
@@ -55,11 +55,11 @@ public sealed class Admin : MovieAssistant
         string userName = Console.ReadLine();
         List<Customer> users = movieTheaterComponents.userRepository.GetAll();
         Customer user = new Customer();
-        if(users.Count > 0)
+        if (users.Count > 0)
         {
-            foreach(Customer us in users)
+            foreach (Customer us in users)
             {
-                if(userName == us.Name)
+                if (userName == us.Name)
                 {
                     user = us;
                 }
@@ -84,11 +84,11 @@ public sealed class Admin : MovieAssistant
         string assistName = Console.ReadLine();
         List<Customer> users = movieTheaterComponents.userRepository.GetAll();
         Customer assist = new Customer();
-        if(users.Count > 0)
+        if (users.Count > 0)
         {
-            foreach(Customer us in users)
+            foreach (Customer us in users)
             {
-                if(assistName == us.Name)
+                if (assistName == us.Name)
                 {
                     assist = us;
                 }

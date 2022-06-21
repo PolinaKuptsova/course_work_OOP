@@ -28,9 +28,3 @@ public class Ticket
         return string.Format($"#{ticketNumber} Hall #{hallNumber}\r\nTime: {startMovie.ToString("d")}");
     }
 }
-
-
-/*//DateTime.ParseExact(reader.GetDate(5).ToString(), "yyyy-MM-dd", null);
-        Console.WriteLine(ticket.startMovie.ToString("o"));
-        Console.WriteLine(ticket.startMovie.ToString("d"));
-        Console.WriteLine(ticket.startMovie.Date.ToString());*/

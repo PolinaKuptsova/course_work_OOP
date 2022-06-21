@@ -1,5 +1,5 @@
 using System;
-using Npgsql; 
+using Npgsql;
 using System.Collections.Generic;
 
 public class TicketPurchaseRepository

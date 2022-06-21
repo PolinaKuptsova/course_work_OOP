@@ -1,7 +1,5 @@
 using System;
 
-// do additional methods ??
-
 // конкретні декоратори
 public class SpecialLightingDecorator : Decorator
 {

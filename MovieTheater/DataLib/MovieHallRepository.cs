@@ -1,5 +1,5 @@
 using System;
-using Npgsql; 
+using Npgsql;
 using System.Collections.Generic;
 
 public class MovieHallRepository
@@ -86,7 +86,7 @@ public class MovieHallRepository
         command.Parameters.AddWithValue("@hall_id", hall_id);
         command.Parameters.AddWithValue("@lightning_system", specialLightningType);
         int nChanged = command.ExecuteNonQuery();
-        
+
         if (nChanged == 1)
         {
             return true;
@@ -121,7 +121,7 @@ public class MovieHallRepository
         command.Parameters.AddWithValue("@hall_id", hall_id);
         command.Parameters.AddWithValue("@audio_system", audioType);
         int nChanged = command.ExecuteNonQuery();
-        
+
         if (nChanged == 1)
         {
             return true;
@@ -171,7 +171,7 @@ public class MovieHallRepository
         command.Parameters.AddWithValue("@hall_id", hall_id);
         command.Parameters.AddWithValue("@additional_seats_amount", seats_amount);
         int nChanged = command.ExecuteNonQuery();
-        
+
         if (nChanged == 1)
         {
             return true;

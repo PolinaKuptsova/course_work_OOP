@@ -9,7 +9,7 @@ namespace course_work_OOP
             var connString = "Host=127.0.0.1;Username=postgres;Password=sofachair2003;Database=movietheatre";
             NpgsqlConnection conn = new NpgsqlConnection(connString);
             conn.Open();
-            
+
             MovieHallRepository movieHallRepository = new MovieHallRepository(conn);
             UserRepository userRepository = new UserRepository(conn);
             MovieRepository movieRepository = new MovieRepository(conn);
@@ -39,8 +39,3 @@ Please choose an operation:
 -show billboard
 -exit
 For more,please, log in!*/
-
-
-// state features repository
-// add movie hall + decorator
-// id in repos

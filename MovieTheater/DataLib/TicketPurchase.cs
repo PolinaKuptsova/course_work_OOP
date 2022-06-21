@@ -1,7 +1,7 @@
 using System;
 public class TicketPurchase
 {
-    public long id;  
+    public long id;
     public long ticket_id;
     public DateTime createdAt;
     public double price;

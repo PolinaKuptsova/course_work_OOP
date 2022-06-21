@@ -11,7 +11,7 @@ abstract public class MovieBarSet
         Price = price;
     }
 
-    public abstract double Price { get ; set; }
+    public abstract double Price { get; set; }
 
     public abstract Beverage AddBeverage();
     public abstract Popcorn AddPopcorn();

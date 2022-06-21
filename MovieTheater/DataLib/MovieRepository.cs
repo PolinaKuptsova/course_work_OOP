@@ -1,5 +1,5 @@
 using System;
-using Npgsql; 
+using Npgsql;
 using System.Collections.Generic;
 
 public class MovieRepository
@@ -40,7 +40,7 @@ public class MovieRepository
         reader.Close();
         return movies;
     }
-    
+
 
     public List<Movie> GetPage(int pageNumber, long pageSize)
     {
@@ -118,7 +118,7 @@ public class MovieRepository
         reader.Close();
         return movie;
     }
-    
+
     public int DeleteById(long id)
     {
         Movie Movie = new Movie();
@@ -155,10 +155,10 @@ public class MovieRepository
         command.Parameters.AddWithValue("@description", movie.description);
         command.Parameters.AddWithValue("@age_range", movie.ageRange);
 
-        
+
         int newId = (int)command.ExecuteScalar();
         return newId;
-        
+
     }
 
     public List<Movie> GetAllAvalibleMovies()

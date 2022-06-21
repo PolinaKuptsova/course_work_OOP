@@ -8,15 +8,15 @@ static public class Authentication
     // Реєстрація перевіряє унікальність імені користувача створює новий запис у таблиці користувачів. 
     // Хешувати паролі користувачів за допомогою алгоритму SHA256. 
     // Функція логіну перевіряє надане ім’я користувача та пароль і повертає об’єкт користувача на основі запису з БД. 
-    
+
     static public Customer ValidateUserName(string name, UserRepository UserRepository)
     {
         List<Customer> users = UserRepository.GetAll();
-        if(users.Count > 0)
+        if (users.Count > 0)
         {
-            foreach(Customer user in users)
+            foreach (Customer user in users)
             {
-                if(name == user.Name)
+                if (name == user.Name)
                 {
                     return user;
                 }
@@ -24,7 +24,7 @@ static public class Authentication
         }
         throw new Exception($"No such user under the userName {name}");
     }
-    
+
     public static string GetHash(string input)
     {
         SHA256 sha256Hash = SHA256.Create();
@@ -49,4 +49,3 @@ static public class Authentication
         return comparer.Compare(hashOfInput, hash) == 0;
     }
 }
-    

@@ -3,11 +3,11 @@ public class Popcorn : SetComponents
 {
     public string flavor;
     public bool extraCheese;
-    public string [] popcornMenu;
+    public string[] popcornMenu;
 
     public Popcorn()
     {
-        this.popcornMenu = new string[]{"cheese popcorn", "beacon popcorn", "caramel popcorn"};
+        this.popcornMenu = new string[] { "cheese popcorn", "beacon popcorn", "caramel popcorn" };
     }
 
     public Popcorn(string setQuality, string movieThemes, bool isRecyclablePackage) : base(setQuality, movieThemes, isRecyclablePackage)

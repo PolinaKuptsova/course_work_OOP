@@ -1,5 +1,5 @@
 using System;
-using Npgsql; 
+using Npgsql;
 using System.Collections.Generic;
 
 public class UserRepository
@@ -50,8 +50,8 @@ public class UserRepository
     {
         List<Customer> users = new List<Customer>();
         NpgsqlCommand command = this.connection.CreateCommand();
-        command.CommandText = @"SELECT * FROM users WHERE access_level = @access_level" ;
-        command.Parameters.AddWithValue("@access_level", accessLevel);   
+        command.CommandText = @"SELECT * FROM users WHERE access_level = @access_level";
+        command.Parameters.AddWithValue("@access_level", accessLevel);
         NpgsqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
@@ -76,7 +76,7 @@ public class UserRepository
         return subscribers;
     }
 
-        public List<Customer> GetCustomersForSession(int session_id)
+    public List<Customer> GetCustomersForSession(int session_id)
     {
         List<Customer> subscribers = new List<Customer>();
         NpgsqlCommand command = this.connection.CreateCommand();
@@ -226,7 +226,7 @@ public class UserRepository
         command.Parameters.AddWithValue("@access_level", user.accessLevel);
         command.Parameters.AddWithValue("@balance", user.Balance);
         command.Parameters.AddWithValue("@is_subscribed", user.isSubscribed == false ? 0 : 1);
-        
+
         int newId = (int)command.ExecuteScalar();
         return newId;
     }
@@ -247,5 +247,3 @@ public class UserRepository
         return user;
     }
 }
-// 0 - false 
-// 1 - true

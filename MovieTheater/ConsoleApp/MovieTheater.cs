@@ -488,7 +488,7 @@ public class MovieTheater : AbstrMovieTheater
 
     public override void ProcessAddHall()
     {
-try
+        try
         {
             if (this.User != null)
             {

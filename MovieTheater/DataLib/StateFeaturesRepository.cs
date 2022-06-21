@@ -1,5 +1,5 @@
 using System;
-using Npgsql; 
+using Npgsql;
 using System.Collections.Generic;
 public class StateFeaturesRepository
 {
@@ -46,7 +46,7 @@ public class StateFeaturesRepository
         return nChanged == 1;
 
     }
-        public int DeleteById(long id)
+    public int DeleteById(long id)
     {
         TicketPurchase ticketPurchase = new TicketPurchase();
         NpgsqlCommand command = this.connection.CreateCommand();
@@ -89,7 +89,7 @@ public class StateFeaturesRepository
         stateFeatures.Discount = reader.GetDouble(2);
         stateFeatures.UpperLimit = reader.GetInt32(3);
         stateFeatures.createdAt = reader.GetDateTime(4);
-    
+
         return stateFeatures;
     }
 }

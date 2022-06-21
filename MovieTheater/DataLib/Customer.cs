@@ -5,24 +5,24 @@ public class Customer : User, IObserver
 {
     public bool deleted;
     public List<Ticket> tickets;
-    private CustomerState customerState; // to bd ???
+    private CustomerState customerState; 
     public CustomerState CustomerState { get => customerState; set => customerState = value; }
     public MovieAssistant movieAssist;
 
-    public Customer ()
+    public Customer()
     {
 
     }
     public Customer(StateFeaturesRepository stateFeaturesRepository)
     {
-        this.CustomerState = new BasicCustomerState(this, stateFeaturesRepository); 
-    }  
+        this.CustomerState = new BasicCustomerState(this, stateFeaturesRepository);
+    }
 
     public void SetCustomerState(StateFeaturesRepository stateFeaturesRepository)
     {
-        this.CustomerState = new BasicCustomerState(this, stateFeaturesRepository); 
-    }  
-    
+        this.CustomerState = new BasicCustomerState(this, stateFeaturesRepository);
+    }
+
     public override string ToString()
     {
         return string.Format($"#{id} {Name}\r\nPhone number: {PhoneNumber}\r\nAge: {age}");
@@ -36,7 +36,7 @@ public class Customer : User, IObserver
         Console.WriteLine("Enter the movie title:");
         string title = Console.ReadLine();
         Movie movie = movieTheaterComponents.movieRepository.GetMovieByTitle(title);
-        if (movie == null) { throw new Exception($"No such film '{title}'!");}
+        if (movie == null) { throw new Exception($"No such film '{title}'!"); }
 
         // add sessions automatically
         List<Session> sessions = movieTheaterComponents.sessionRepository.GetActualMovieSessions(movie.id);
@@ -55,7 +55,7 @@ public class Customer : User, IObserver
         Console.WriteLine("Enter the number of session:");
         string session_id = Console.ReadLine();
         Session session = movieTheaterComponents.sessionRepository.GetById(int.Parse(session_id));
-        
+
         List<Ticket> tickets = movieTheaterComponents.ticketRepository.GetPlacesForSession(session);
         MovieHall hall = movieTheaterComponents.movieHallRepository.GetById(session.hall_id);
         DisplayPlacesInMovieHall(session, tickets, hall);
@@ -70,7 +70,7 @@ public class Customer : User, IObserver
             string placeStr = Console.ReadLine();
             row = int.Parse(rowStr);
             place = int.Parse(placeStr);
-            
+
             foreach (Ticket t in tickets)
             {
                 if (row == t.row && place == t.place)
@@ -92,9 +92,9 @@ public class Customer : User, IObserver
             hallNumber = hall.hall_id,
             session = session
         };
-        
+
         newTicket.id = movieTheaterComponents.ticketRepository.Insert(newTicket);
-        
+
         this.tickets = new List<Ticket>();
         this.tickets = movieTheaterComponents.ticketRepository.GetCustomerTickets(this.id);
         this.tickets.Add(newTicket);
@@ -148,39 +148,38 @@ public class Customer : User, IObserver
         Console.WriteLine(" Status of card = {0}", this.CustomerState.GetType().Name);
     }
 
-    private static string [,] GetPlacesInMovieHall(List<Ticket> tickets, MovieHall hall)
+    private static string[,] GetPlacesInMovieHall(List<Ticket> tickets, MovieHall hall)
     {
-        hall.places = new string [hall.rowAmount, hall.placesInRowAmount];
+        hall.places = new string[hall.rowAmount, hall.placesInRowAmount];
         int row, place;
         foreach (Ticket t in tickets)
         {
-            row = t.row-1; place = t.place-1;
-            hall.places[row, place] = " +"; 
+            row = t.row - 1; place = t.place - 1;
+            hall.places[row, place] = " +";
         }
         return hall.places;
     }
 
-    private static void DisplayPlacesInMovieHall(Session session, 
+    private static void DisplayPlacesInMovieHall(Session session,
         List<Ticket> tickets, MovieHall hall)
     {
         hall.places = GetPlacesInMovieHall(tickets, hall);
         Console.WriteLine("   1 2 3 4 5 6 7 8 9 10");
         for (int row = 0; row < hall.places.GetLength(0); row++)
-        {   
+        {
             row = row + 1;
-            if(row == hall.places.GetLength(0)){Console.Write(row.ToString());}
-            else{Console.Write(row.ToString()+" ");}
-            row = row -1;
+            if (row == hall.places.GetLength(0)) { Console.Write(row.ToString()); }
+            else { Console.Write(row.ToString() + " "); }
+            row = row - 1;
             for (int place = 0; place < hall.places.GetLength(1); place++)
             {
                 if (hall.places[row, place] == null) { Console.Write(" -"); }
-                else{Console.Write(hall.places[row, place]);}
+                else { Console.Write(hall.places[row, place]); }
             }
             Console.WriteLine();
         }
     }
 
-    //+
     public override void UpdateMyAccount(MovieTheaterComponents movieTheaterComponents)
     {
         if (this.isBlocked) { throw new Exception("Your account has been blocked!"); }
@@ -221,13 +220,13 @@ public class Customer : User, IObserver
             this.Password = updateCustomer.Password;
             this.PhoneNumber = updateCustomer.PhoneNumber;
             this.age = updateCustomer.age;
+            Console.WriteLine("Updated!");
             return;
         }
         throw new Exception("Not updated!");
 
     }
 
-    //+
     public override void DeleteMyAccount(MovieTheaterComponents movieTheaterComponents)
     {
         if (this.isBlocked) { throw new Exception("Your account has been blocked!"); }
@@ -240,24 +239,23 @@ public class Customer : User, IObserver
             }
         }
         int result = movieTheaterComponents.userRepository.DeleteById(this.id);
-        if(result == 1)
+        if (result == 1)
         {
             Console.WriteLine("Succsessfully deleted!");
             this.deleted = true;
-            return ;
+            return;
         }
         throw new Exception("Not deleted!");
-        
+
     }
 
-    //+
     public override void ShowMyAccount(MovieTheaterComponents movieTheaterComponents)
     {
         if (this.isBlocked) { throw new Exception("Your account has been blocked!"); }
         Console.WriteLine(this);
     }
 
-    //+
+
     public override void ShowMyTickets(MovieTheaterComponents movieTheaterComponents)
     {
         if (this.isBlocked) { throw new Exception("Your account has been blocked!"); }

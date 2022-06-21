@@ -8,15 +8,17 @@ user -      ShowMyTickets
             DeleteMyAccount
             ShowMyAccount
             Exit
+            Log out
 
 assist -    AddMovie
             DeleteMovie
             CancelSession
             GetAllCustomers
             GetAllMovies
+            Add hall
 
 admin -     BlockUser
-            AddCinemaAssistant // that exist change their accessLevel
+            AddCinemaAssistant 
             DeleteCinemaAssistant            
 */
 public static class ConsoleApp{

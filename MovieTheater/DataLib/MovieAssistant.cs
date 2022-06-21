@@ -36,12 +36,12 @@ public class MovieAssistant : Customer
 
         MovieHall newHall = new MovieHall(screenType, int.Parse(rowAmountStr), int.Parse(placesAmountStr));
         int id = movieTheaterComponents.movieHallRepository.Insert(newHall);
-        if(id != 0)
+        if (id != 0)
         {
             newHall.hall_id = id;
             Console.WriteLine("Hall was added!\r\nDo you want to improve it/ 'Yes/No'");
             string improving = Console.ReadLine();
-            if(improving == "Yes")
+            if (improving == "Yes")
             {
                 ImproveMovieHall(newHall, movieTheaterComponents);
             }
@@ -53,14 +53,14 @@ public class MovieAssistant : Customer
     {
         Console.WriteLine("Do you want to install special lightning? 'Yes/No'");
         string specialLightningResponse = Console.ReadLine();
-        if(specialLightningResponse  == "Yes")
+        if (specialLightningResponse == "Yes")
         {
             Room movieHall = hall;
             Console.WriteLine("Enter the type of lightning: ");
             string specialLightningType = Console.ReadLine();
             Decorator specialLightning = new SpecialLightingDecorator(specialLightningType);
             bool isUpdated = movieTheaterComponents.movieHallRepository.UpdateLightning(hall.hall_id, specialLightningType);
-            if(isUpdated)
+            if (isUpdated)
             {
                 specialLightning.Show_Info();
             }
@@ -93,7 +93,7 @@ public class MovieAssistant : Customer
                 additionalSeats.Show_Info();
             }
         }
-        
+
     }
 
 
@@ -220,7 +220,7 @@ public class MovieAssistant : Customer
         }
     }
 
-    private void GetSubscribersForSessionCanceling(Session session, 
+    private void GetSubscribersForSessionCanceling(Session session,
         MovieTheaterComponents movieTheaterComponents)
     {
         List<Customer> customers = movieTheaterComponents.userRepository.GetCustomersForSession(session.id);

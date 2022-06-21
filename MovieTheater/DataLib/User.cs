@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-public abstract class User 
+public abstract class User
 {
     public int id;
     private string name;
@@ -14,7 +14,7 @@ public abstract class User
     private double balance;
 
     protected User()
-    {  }
+    { }
 
     public string Name
     {
