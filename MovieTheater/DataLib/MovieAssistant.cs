@@ -25,6 +25,77 @@ public class MovieAssistant : Customer
         };
     }
 
+    public void AddMovieHall(MovieTheaterComponents movieTheaterComponents)
+    {
+        Console.WriteLine("Enter the type of screen: ");
+        string screenType = Console.ReadLine();
+        Console.WriteLine("Enter the amount of rows: ");
+        string rowAmountStr = Console.ReadLine();
+        Console.WriteLine("Enter the amount of places in a row: ");
+        string placesAmountStr = Console.ReadLine();
+
+        MovieHall newHall = new MovieHall(screenType, int.Parse(rowAmountStr), int.Parse(placesAmountStr));
+        int id = movieTheaterComponents.movieHallRepository.Insert(newHall);
+        if(id != 0)
+        {
+            newHall.hall_id = id;
+            Console.WriteLine("Hall was added!\r\nDo you want to improve it/ 'Yes/No'");
+            string improving = Console.ReadLine();
+            if(improving == "Yes")
+            {
+                ImproveMovieHall(newHall, movieTheaterComponents);
+            }
+            return;
+        }
+    }
+
+    public void ImproveMovieHall(MovieHall hall, MovieTheaterComponents movieTheaterComponents)
+    {
+        Console.WriteLine("Do you want to install special lightning? 'Yes/No'");
+        string specialLightningResponse = Console.ReadLine();
+        if(specialLightningResponse  == "Yes")
+        {
+            Room movieHall = hall;
+            Console.WriteLine("Enter the type of lightning: ");
+            string specialLightningType = Console.ReadLine();
+            Decorator specialLightning = new SpecialLightingDecorator(specialLightningType);
+            bool isUpdated = movieTheaterComponents.movieHallRepository.UpdateLightning(hall.hall_id, specialLightningType);
+            if(isUpdated)
+            {
+                specialLightning.Show_Info();
+            }
+        }
+        Console.WriteLine("Do you want to install additional audio system? 'Yes/No'");
+        string additionAudioResponse = Console.ReadLine();
+        if (additionAudioResponse == "Yes")
+        {
+            Room movieHall = hall;
+            Console.WriteLine("Enter the type of lightning: ");
+            string audioType = Console.ReadLine();
+            Decorator additionalAudio = new AdditionalAudioSystemDecorator(audioType);
+            bool isUpdated = movieTheaterComponents.movieHallRepository.UpdateAudioSystem(hall.hall_id, audioType);
+            if (isUpdated)
+            {
+                additionalAudio.Show_Info();
+            }
+        }
+        Console.WriteLine("Do you want to add additional seats? 'Yes/No'");
+        string additionSeatsResponse = Console.ReadLine();
+        if (additionAudioResponse == "Yes")
+        {
+            Room movieHall = hall;
+            Console.WriteLine("Enter the amount of additional seats: ");
+            string seatsAmount = Console.ReadLine();
+            Decorator additionalSeats = new AdditionalSeatsDecorator(int.Parse(seatsAmount));
+            bool isUpdated = movieTheaterComponents.movieHallRepository.UpdateAdditionalSeats(hall.hall_id, int.Parse(seatsAmount));
+            if (isUpdated)
+            {
+                additionalSeats.Show_Info();
+            }
+        }
+        
+    }
+
 
     // add sessions ??
     public void AddMovie(MovieTheaterComponents movieTheaterComponents)

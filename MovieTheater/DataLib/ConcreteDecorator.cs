@@ -5,12 +5,32 @@ using System;
 // конкретні декоратори
 public class SpecialLightingDecorator : Decorator
 {
-    public string typeOfLightning;
+    private string typeOfLightning;
 
+    public SpecialLightingDecorator()
+    {
+    }
+
+    public SpecialLightingDecorator(string typeOfLightning)
+    {
+        TypeOfLightning = typeOfLightning;
+    }
+
+    public string TypeOfLightning
+    {
+        get
+        {
+            return typeOfLightning;
+        }
+        set
+        {
+            if (!string.IsNullOrEmpty(value)) {typeOfLightning = value; }
+        }
+    }
     public override void Show_Info()
     {
         base.Show_Info();
-        Console.WriteLine($"This hall is for film that require splecial effects and special lightning. Plese take into account its type {typeOfLightning}");
+        Console.WriteLine($"This hall is for film that require splecial effects and special lightning. Plese take into account its type {TypeOfLightning}");
     }
     public override void MakeSchedule(MovieTheaterComponents movieTheaterComponents)
     {
@@ -23,14 +43,28 @@ public class SpecialLightingDecorator : Decorator
 
 public class AdditionalAudioSystemDecorator : Decorator
 {
-    public string itsPlace;
-    public int volumeMin;
-    public int volumeMax;
+    public string audioType;
 
-    public override void Show_Info()
+    public AdditionalAudioSystemDecorator(string audioType)
+    {
+        AudioType = audioType;
+    }
+
+    public string AudioType
+    {
+        get
+        {
+            return audioType;
+        }
+        set
+        {
+            if (!string.IsNullOrEmpty(value)) {audioType = value; }
+        }
+    }
+        public override void Show_Info()
     {
         base.Show_Info();
-        Console.WriteLine($"This hall is for film that require splecial effects and addtional audio components. Plese take into account its volume diapasone: {volumeMin} - {volumeMax}");
+        Console.WriteLine($"This hall is for film that require splecial effects and addtional audio components. Tupe: {audioType}");
     }
     public override void MakeSchedule(MovieTheaterComponents movieTheaterComponents)
     {
@@ -41,9 +75,25 @@ public class AdditionalAudioSystemDecorator : Decorator
     }
 }
 
-public class AdditionalSofaSeatsDecorator : Decorator
+public class AdditionalSeatsDecorator : Decorator
 {
     public int seats_amount;
+    public AdditionalSeatsDecorator(int seats_amount)
+    {
+        Seats_amount = seats_amount;
+    }
+
+    public int Seats_amount
+    {
+        get
+        {
+            return seats_amount;
+        }
+        set
+        {
+            seats_amount = value; 
+        }
+    }
     public override void Show_Info()
     {
         base.Show_Info();
@@ -53,7 +103,7 @@ public class AdditionalSofaSeatsDecorator : Decorator
     {
         base.MakeSchedule(movieTheaterComponents);
         DateTime time = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 5, 0,0);
-        Console.WriteLine($"The responsible one should check the sofas quality at: \r\n{time}");
+        Console.WriteLine($"The responsible one should check the seats quality at: \r\n{time}");
     }
 
 }

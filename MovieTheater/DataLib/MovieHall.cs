@@ -4,20 +4,41 @@ using System.Collections.Generic;
 public class MovieHall : Room
 {
     public int hall_id;
-    public string typeOfScreen;
+    private string typeOfScreen;
     public int rowAmount;
     public int placesInRowAmount;
+    public string lightningSystem;
+    public string audioSystem;
+    public int amountOfAdditionalSeats;
     public string [,] places;
+
+    public string TypeOfScreen
+    {
+        get
+        {
+            return typeOfScreen;
+        }
+        set
+        {
+            if (!string.IsNullOrEmpty(value)) { typeOfScreen = value; }
+        }
+    }
 
     public MovieHall()
     {
+        this.lightningSystem = "basic system";
+        this.audioSystem = "basic system";
+        this.amountOfAdditionalSeats = 0;
     }
 
     public MovieHall(string typeOfScreen, int rowAmount, int placesInRowAmount)
     {
-        this.typeOfScreen = typeOfScreen;
+        this.TypeOfScreen = typeOfScreen;
         this.rowAmount = rowAmount;
         this.placesInRowAmount = placesInRowAmount;
+        this.lightningSystem = "basic system";
+        this.audioSystem = "basic system";
+        this.amountOfAdditionalSeats = 0;
     }
 
     public override void MakeSchedule(MovieTheaterComponents movieTheaterComponents)
@@ -37,7 +58,7 @@ public class MovieHall : Room
 
     public override void Show_Info()
     {
-        Console.WriteLine($"Hall #{hall_id}: Screen: {typeOfScreen}");
+        Console.WriteLine($"Hall #{hall_id}: Screen: {TypeOfScreen}");
     }
 
     public override string ToString()
