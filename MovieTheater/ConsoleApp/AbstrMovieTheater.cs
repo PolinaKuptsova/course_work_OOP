@@ -30,14 +30,15 @@ public abstract class AbstrMovieTheater
     {
         this.allCommands = new string[] {"block user","add assist","delete assist", "delete movie","add movie", "cancel session", "get all customers",
             "get all movies","show my tickets","update my account", "show my account", "delete my account", "buy ticket", "exit", "log in", "log out",
-            "registrate", "show billboard"};
+            "registrate", "show billboard", "add hall"};
         this.allProcesses = new List<Action>{ProcessBlockUser, ProcessAddMovieAssist, ProcessDeleteMovieAssist,
             ProcessDeleteMovie, ProcessAddMovie, ProcessCancelSession, ProcessGetAllCustomers,
             ProcessGetAllMovies, ProcessShowMyTickets, ProcessUpdateMyAccount, ProcessShowMyAccount,
             ProcessDeleteMyAccount, ProcessBuyTicket, ProcessExit, ProcessLogIn, ProcessLogOut,
-            ProcessRegistrate, ProcessShowBillboard};
+            ProcessRegistrate, ProcessShowBillboard, ProcessAddHall};
     }
 
+    public abstract void ProcessAddHall();
     public abstract void ProcessBlockUser();
     public abstract void ProcessAddMovieAssist();
     public abstract void ProcessDeleteMovieAssist();

@@ -30,7 +30,7 @@ public class SpecialLightingDecorator : Decorator
     public override void Show_Info()
     {
         base.Show_Info();
-        Console.WriteLine($"This hall is for film that require splecial effects and special lightning. Plese take into account its type {TypeOfLightning}");
+        Console.WriteLine($"This hall is for film that require splecial effects and special lightning. Plese take into account its type: {TypeOfLightning}");
     }
     public override void MakeSchedule(MovieTheaterComponents movieTheaterComponents)
     {
@@ -64,7 +64,7 @@ public class AdditionalAudioSystemDecorator : Decorator
         public override void Show_Info()
     {
         base.Show_Info();
-        Console.WriteLine($"This hall is for film that require splecial effects and addtional audio components. Tupe: {audioType}");
+        Console.WriteLine($"This hall is for film that require splecial effects and addtional audio components. Type: {audioType}");
     }
     public override void MakeSchedule(MovieTheaterComponents movieTheaterComponents)
     {
@@ -97,7 +97,7 @@ public class AdditionalSeatsDecorator : Decorator
     public override void Show_Info()
     {
         base.Show_Info();
-        Console.WriteLine($"This hall contains special seats. Their amount {seats_amount}");
+        Console.WriteLine($"This hall contains special seats. Their amount: {seats_amount}");
     }
     public override void MakeSchedule(MovieTheaterComponents movieTheaterComponents)
     {

@@ -70,7 +70,7 @@ public class MovieAssistant : Customer
         if (additionAudioResponse == "Yes")
         {
             Room movieHall = hall;
-            Console.WriteLine("Enter the type of lightning: ");
+            Console.WriteLine("Enter the type of audio system: ");
             string audioType = Console.ReadLine();
             Decorator additionalAudio = new AdditionalAudioSystemDecorator(audioType);
             bool isUpdated = movieTheaterComponents.movieHallRepository.UpdateAudioSystem(hall.hall_id, audioType);

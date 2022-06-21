@@ -171,4 +171,9 @@ public class ProcessControl : AbstrMovieTheater
     {
         movieTheater.ProcessLogOut();
     }
+
+    public override void ProcessAddHall()
+    {
+        movieTheater.ProcessAddHall();
+    }
 }

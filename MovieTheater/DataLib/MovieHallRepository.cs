@@ -62,13 +62,13 @@ public class MovieHallRepository
         return moviehalls;
     }
 
-    public bool Update(long id, MovieHall moviehall)
+    public bool Update(long hall_id, MovieHall moviehall)
     {
         NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"UPDATE moviehalls SET type_of_screen = @type_of_screen, row_amount = @row_amount,
          places_in_row_amount = @places_in_row_amount
          WHERE hall_id = @hall_id";
-        command.Parameters.AddWithValue("@hall_id", id);
+        command.Parameters.AddWithValue("@hall_id", hall_id);
         command.Parameters.AddWithValue("@type_of_screen", moviehall.TypeOfScreen);
         command.Parameters.AddWithValue("@row_amount", moviehall.rowAmount);
         command.Parameters.AddWithValue("@places_in_row_amount", moviehall.placesInRowAmount);
@@ -78,12 +78,12 @@ public class MovieHallRepository
 
     }
 
-    public bool UpdateLightning(int id, string specialLightningType)
+    public bool UpdateLightning(int hall_id, string specialLightningType)
     {
         NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"UPDATE moviehalls SET lightning_system = @lightning_system 
-            WHERE id = @id";
-        command.Parameters.AddWithValue("@id", id);
+            WHERE hall_id = @hall_id";
+        command.Parameters.AddWithValue("@hall_id", hall_id);
         command.Parameters.AddWithValue("@lightning_system", specialLightningType);
         int nChanged = command.ExecuteNonQuery();
         
@@ -94,12 +94,12 @@ public class MovieHallRepository
         return false;
     }
 
-    public MovieHall GetById(long id)
+    public MovieHall GetById(long hall_id)
     {
         MovieHall moviehall = new MovieHall();
         NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"SELECT * FROM moviehalls WHERE hall_id = @hall_id";
-        command.Parameters.AddWithValue("@hall_id", id);
+        command.Parameters.AddWithValue("@hall_id", hall_id);
         NpgsqlDataReader reader = command.ExecuteReader();
         if (reader.Read())
         {
@@ -113,12 +113,12 @@ public class MovieHallRepository
         return moviehall;
     }
 
-    public bool UpdateAudioSystem(int id, string audioType)
+    public bool UpdateAudioSystem(int hall_id, string audioType)
     {
         NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"UPDATE moviehalls SET audio_system = @audio_system 
-            WHERE id = @id";
-        command.Parameters.AddWithValue("@id", id);
+            WHERE hall_id = @hall_id";
+        command.Parameters.AddWithValue("@hall_id", hall_id);
         command.Parameters.AddWithValue("@audio_system", audioType);
         int nChanged = command.ExecuteNonQuery();
         
@@ -129,12 +129,12 @@ public class MovieHallRepository
         return false;
     }
 
-    public int DeleteById(long id)
+    public int DeleteByhall_Id(long hall_id)
     {
         MovieHall moviehall = new MovieHall();
         NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"DELETE FROM moviehalls WHERE hall_id = @hall_id";
-        command.Parameters.AddWithValue("@hall_id", id);
+        command.Parameters.AddWithValue("@hall_id", hall_id);
         int nChanged = command.ExecuteNonQuery();
         if (nChanged == 0)
         {
@@ -149,24 +149,26 @@ public class MovieHallRepository
     {
         NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText =
-        @"INSERT INTO moviehalls (type_of_screen, row_amount, places_in_row_amount) 
-            VALUES (@type_of_screen, @row_amount, @places_in_row_amount)
-            RETURNING id";
-        command.Parameters.AddWithValue("@hall_id", moviehall.hall_id);
+        @"INSERT INTO moviehalls (type_of_screen, row_amount, places_in_row_amount, lightning_system, audio_system, additional_seats_amount) 
+            VALUES (@type_of_screen, @row_amount, @places_in_row_amount, @lightning_system, @audio_system, @additional_seats_amount)
+            RETURNING hall_id";
         command.Parameters.AddWithValue("@type_of_screen", moviehall.TypeOfScreen);
         command.Parameters.AddWithValue("@row_amount", moviehall.rowAmount);
         command.Parameters.AddWithValue("@places_in_row_amount", moviehall.placesInRowAmount);
-        int newId = (int)command.ExecuteScalar();
-        return newId;
+        command.Parameters.AddWithValue("@lightning_system", moviehall.lightningSystem);
+        command.Parameters.AddWithValue("@audio_system", moviehall.audioSystem);
+        command.Parameters.AddWithValue("@additional_seats_amount", moviehall.amountOfAdditionalSeats);
+        int newhall_Id = (int)command.ExecuteScalar();
+        return newhall_Id;
 
     }
 
-    public bool UpdateAdditionalSeats(int id, int seats_amount)
+    public bool UpdateAdditionalSeats(int hall_id, int seats_amount)
     {
         NpgsqlCommand command = this.connection.CreateCommand();
         command.CommandText = @"UPDATE moviehalls SET additional_seats_amount = @additional_seats_amount 
-            WHERE id = @id";
-        command.Parameters.AddWithValue("@id", id);
+            WHERE hall_id = @hall_id";
+        command.Parameters.AddWithValue("@hall_id", hall_id);
         command.Parameters.AddWithValue("@additional_seats_amount", seats_amount);
         int nChanged = command.ExecuteNonQuery();
         
@@ -184,6 +186,9 @@ public class MovieHallRepository
         moviehall.TypeOfScreen = reader.GetString(1);
         moviehall.rowAmount = reader.GetInt32(2);
         moviehall.placesInRowAmount = reader.GetInt32(3);
+        moviehall.lightningSystem = reader.GetString(4);
+        moviehall.audioSystem = reader.GetString(5);
+        moviehall.amountOfAdditionalSeats = reader.GetInt32(6);
 
         return moviehall;
     }

@@ -476,14 +476,36 @@ public class MovieTheater : AbstrMovieTheater
     }
     private void ShowInfoForAssist()
     {
-        Console.WriteLine("Now you can choose an operation: \r\n-show my tickets\r\n-buy ticket\r\n-show my account\r\n-update my account\r\n-delete my account\r\n-exit\r\n");
-        Console.WriteLine("-add movie\r\n-delete movie\r\n-cancel session\r\n-get all customers\r\n-get all movies\r\n");
+        Console.WriteLine("Now you can choose an operation: \r\n-show my tickets\r\n-buy ticket\r\n-show my account\r\n-update my account\r\n-delete my account\r\n-exit\r\n-log out\r\n");
+        Console.WriteLine("-add movie\r\n-delete movie\r\n-cancel session\r\n-get all customers\r\n-get all movies\r\n-add hall\r\n");
     }
     private void ShowInfoForAdmin()
     {
-        Console.WriteLine("Now you can choose an operation: \r\n-show my tickets\r\n-buy ticket\r\n-show my account\r\n-update my account\r\n-delete my account\r\n-exit\r\n");
-        Console.WriteLine("-add movie\r\n-delete movie\r\n-cancel session\r\n-get all customers\r\n-get all movies\r\n");
+        Console.WriteLine("Now you can choose an operation: \r\n-show my tickets\r\n-buy ticket\r\n-show my account\r\n-update my account\r\n-delete my account\r\n-exit\r\n-log out\r\n");
+        Console.WriteLine("-add movie\r\n-delete movie\r\n-cancel session\r\n-get all customers\r\n-get all movies\r\n-add hall\r\n");
         Console.WriteLine("-block user\r\n-add assist\r\n-delete assist");
     }
 
+    public override void ProcessAddHall()
+    {
+try
+        {
+            if (this.User != null)
+            {
+                if (this.User.accessLevel != "customer")
+                {
+                    MovieAssistant assist = new MovieAssistant();
+                    assist.SetMovieAssistant(this.User);
+                    assist.AddMovieHall(movieTheaterComponents);
+                    return;
+                }
+                throw new Exception($"Your acces level is not suitable, you are a {this.User.accessLevel}");
+            }
+            throw new Exception("First log in!");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
 }
