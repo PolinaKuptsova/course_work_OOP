@@ -22,6 +22,7 @@ namespace course_work_OOP
             ticketRepository, sessionRepository, ticketPurchaseRepository, stateFeaturesRepository);
 
             MovieTheater movieTheater = new MovieTheater(components);
+            movieTheater.SetMovieAssistant();
             AbstrMovieTheater processControl = new ProcessControl(movieTheater, components);
             ConsoleApp.Run(processControl);
 

@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-// do decorator
+
 public class MovieHall : Room
 {
     public int hall_id;

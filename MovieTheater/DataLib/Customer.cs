@@ -5,8 +5,12 @@ public class Customer : User, IObserver
 {
     public bool deleted;
     public List<Ticket> tickets;
-    private CustomerState customerState; 
-    public CustomerState CustomerState { get => customerState; set => customerState = value; }
+    private CustomerState customerState;
+    public CustomerState CustomerState
+    {
+        get => customerState;
+        set => customerState = value;
+    }
     public MovieAssistant movieAssist;
 
     public Customer()
@@ -271,25 +275,14 @@ public class Customer : User, IObserver
         throw new Exception("No tickets yet!");
     }
 
-    public override void SubscribeForPremiereNotification(MovieAssistant assist, MovieTheaterComponents movieTheaterComponents)
+    public override void SubscribeForPremiereNotification(MovieAssistant assistant)
     {
-        this.movieAssist = assist;
+        this.movieAssist = assistant;
         this.movieAssist.NotifyMovieAdding += SendPremiereNotification;
-    }
-
-    public override void SubscribeForSessionCancelingNotification(MovieAssistant assist, MovieTheaterComponents movieTheaterComponents)
-    {
-        this.movieAssist = assist;
-        this.movieAssist.NotifySessionCanceling += SendCancelSessionNotification;
     }
 
     public void SendPremiereNotification(Movie newMovie)
     {
         Console.WriteLine("New movie is on ours screens! Hurry up to buy a ticket" + newMovie);
-    }
-
-    public void SendCancelSessionNotification(Session session)
-    {
-        Console.WriteLine($"We are sorry to inform, but the  session \r\n{session}\r\n was canceled. The money will go to charity!");
     }
 }

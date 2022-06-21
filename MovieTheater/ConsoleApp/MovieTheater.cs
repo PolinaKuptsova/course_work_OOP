@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 public class MovieTheater : AbstrMovieTheater
 {
+
     public MovieTheater(MovieTheaterComponents movieTheaterComponents) : base(movieTheaterComponents)
     {
         ShowInfoForUser();
@@ -34,10 +35,7 @@ public class MovieTheater : AbstrMovieTheater
             {
                 if (this.User.accessLevel != "customer")
                 {
-                    MovieAssistant assist = new MovieAssistant();
-                    assist.SetMovieAssistant(this.User);
-                    GetSubscribersForMovieAdding(assist);
-                    assist.AddMovie(this.movieTheaterComponents);
+                    this.assistant.AddMovie(this.movieTheaterComponents);
                     return;
                 }
                 throw new Exception($"Your acces level is not suitable, you are a {this.User.accessLevel}");
@@ -48,16 +46,6 @@ public class MovieTheater : AbstrMovieTheater
         {
             Console.WriteLine(ex.Message);
         }
-    }
-
-    private void GetSubscribersForMovieAdding(MovieAssistant assistant)
-    {
-        List<Customer> customers = this.movieTheaterComponents.userRepository.GetCustomersSubscribers();
-        foreach (Customer sub in customers)
-        {
-            sub.SubscribeForPremiereNotification(assistant, this.movieTheaterComponents);
-        }
-
     }
 
     public override void ProcessAddMovieAssist()
@@ -331,7 +319,7 @@ public class MovieTheater : AbstrMovieTheater
         {
             if (this.User == null)
             {
-                this.User = MovieTheater.Registrate(this.movieTheaterComponents);
+                this.User = Registrate(this.movieTheaterComponents);
                 Console.WriteLine("You have been successfully registrated!");
                 ShowInfoForCustomer();
                 return;
@@ -344,7 +332,7 @@ public class MovieTheater : AbstrMovieTheater
         }
     }
 
-    private static Customer Registrate(MovieTheaterComponents movieTheater)
+    private Customer Registrate(MovieTheaterComponents movieTheater)
     {
         Console.WriteLine("Please, enter info about yourself:");
         Console.Write("Name: ");
@@ -378,7 +366,12 @@ public class MovieTheater : AbstrMovieTheater
         customer.PhoneNumber = phoneNumber;
         customer.age = age;
         customer.accessLevel = "customer";
-        if (subscribe == "Yes") { customer.isSubscribed = true; }
+        if (subscribe == "Yes")
+        {
+            customer.isSubscribed = true;
+            Customer subCustomer = customer;
+            subCustomer.SubscribeForPremiereNotification(this.assistant);
+        }
 
         long id = 0;
         id = movieTheater.userRepository.Insert(customer);

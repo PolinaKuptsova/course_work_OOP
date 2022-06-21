@@ -90,6 +90,5 @@ public abstract class User
     public abstract void UpdateMyAccount(MovieTheaterComponents movieTheaterComponents);
     public abstract void DeleteMyAccount(MovieTheaterComponents movieTheaterComponents);
     public abstract void ShowMyAccount(MovieTheaterComponents movieTheaterComponents);
-    public abstract void SubscribeForPremiereNotification(MovieAssistant assist, MovieTheaterComponents movieTheaterComponents);
-    public abstract void SubscribeForSessionCancelingNotification(MovieAssistant assist, MovieTheaterComponents movieTheaterComponents);
+    public abstract void SubscribeForPremiereNotification(MovieAssistant assist);
 }

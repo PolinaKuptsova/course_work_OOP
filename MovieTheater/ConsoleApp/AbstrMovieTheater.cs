@@ -4,6 +4,7 @@ using System.Collections.Generic;
 public abstract class AbstrMovieTheater
 {
     private Customer user;
+    public MovieAssistant assistant;
     public MovieTheaterComponents movieTheaterComponents;
     public string[] allCommands;
     public List<Action> allProcesses;
@@ -36,6 +37,12 @@ public abstract class AbstrMovieTheater
             ProcessGetAllMovies, ProcessShowMyTickets, ProcessUpdateMyAccount, ProcessShowMyAccount,
             ProcessDeleteMyAccount, ProcessBuyTicket, ProcessExit, ProcessLogIn, ProcessLogOut,
             ProcessRegistrate, ProcessShowBillboard, ProcessAddHall};
+    }
+
+    public void SetMovieAssistant()
+    {
+        List<Customer> allAssists= this.movieTheaterComponents.userRepository.GetAllByAccessLevel("moderator");
+        this.assistant = new MovieAssistant().SetMovieAssistant(allAssists[0]);
     }
 
     public abstract void ProcessAddHall();

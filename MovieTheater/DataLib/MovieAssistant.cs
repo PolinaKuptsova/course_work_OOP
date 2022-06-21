@@ -96,7 +96,6 @@ public class MovieAssistant : Customer
 
     }
 
-
     // add sessions ??
     public void AddMovie(MovieTheaterComponents movieTheaterComponents)
     {
@@ -147,7 +146,6 @@ public class MovieAssistant : Customer
         if (this.NotifyMovieAdding != null) { NotifyMovieAdding.Invoke(newMovie); }
     }
 
-
     public void DeleteMovie(MovieTheaterComponents movieTheaterComponents)
     {
         Console.WriteLine("Enter the movie title:");
@@ -196,8 +194,8 @@ public class MovieAssistant : Customer
         string isCanceled = Console.ReadLine();
         bool res = movieTheaterComponents.sessionRepository.CancelSession(session.id, bool.Parse(isCanceled));
 
-        GetSubscribersForSessionCanceling(session, movieTheaterComponents);
-        if (this.NotifySessionCanceling != null) { NotifySessionCanceling.Invoke(session); }
+        // GetSubscribersForSessionCanceling(session, movieTheaterComponents);
+        // if (this.NotifySessionCanceling != null) { NotifySessionCanceling.Invoke(session); }
     }
 
     public void GetAllCustomers(MovieTheaterComponents movieTheaterComponents)
@@ -220,15 +218,4 @@ public class MovieAssistant : Customer
         }
     }
 
-    private void GetSubscribersForSessionCanceling(Session session,
-        MovieTheaterComponents movieTheaterComponents)
-    {
-        List<Customer> customers = movieTheaterComponents.userRepository.GetCustomersForSession(session.id);
-        Console.WriteLine(customers[0]);
-        foreach (Customer sub in customers)
-        {
-            sub.SubscribeForSessionCancelingNotification(this, movieTheaterComponents);
-        }
-
-    }
 }
