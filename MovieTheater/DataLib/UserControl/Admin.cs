@@ -101,7 +101,7 @@ public sealed class Admin : MovieAssistant
             Console.WriteLine($"Assistant {assistName} has been deleted");
             return;
         }
-        throw new Exception("$Incorrect name '{assistName}.'");
+        throw new Exception($"Incorrect name '{assistName}.'");
 
     }
 }

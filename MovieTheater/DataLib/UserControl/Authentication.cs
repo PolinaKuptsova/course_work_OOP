@@ -22,7 +22,7 @@ static public class Authentication
                 }
             }
         }
-        throw new Exception($"No such user under the userName {name}");
+        throw new Exception($"No such user under the userName '{name}'");
     }
 
     public static string GetHash(string input)

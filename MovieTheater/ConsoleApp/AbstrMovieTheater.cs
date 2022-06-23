@@ -8,6 +8,7 @@ public abstract class AbstrMovieTheater
     public MovieTheaterComponents movieTheaterComponents;
     public string[] allCommands;
     public List<Action> allProcesses;
+    public string errorMessage;
 
     public Customer User
     {

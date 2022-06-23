@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 public class MovieTheater : AbstrMovieTheater
 {
-
     public MovieTheater(MovieTheaterComponents movieTheaterComponents) : base(movieTheaterComponents)
     {
         ShowInfoForUser();
@@ -24,6 +23,7 @@ public class MovieTheater : AbstrMovieTheater
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+            this.errorMessage = ex.Message;
         }
     }
 
@@ -45,6 +45,7 @@ public class MovieTheater : AbstrMovieTheater
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+            this.errorMessage = ex.Message;
         }
     }
 
@@ -67,6 +68,8 @@ public class MovieTheater : AbstrMovieTheater
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+            this.errorMessage = ex.Message;
+
         }
     }
 
@@ -90,6 +93,8 @@ public class MovieTheater : AbstrMovieTheater
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+            this.errorMessage = ex.Message;
+
         }
     }
 
@@ -104,11 +109,12 @@ public class MovieTheater : AbstrMovieTheater
                 this.User.ChooseTicket(this.movieTheaterComponents);
                 return;
             }
-            throw new Exception("First log in!");
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+            this.errorMessage = ex.Message;
+
         }
     }
 
@@ -132,6 +138,8 @@ public class MovieTheater : AbstrMovieTheater
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+            this.errorMessage = ex.Message;
+
         }
     }
 
@@ -155,6 +163,8 @@ public class MovieTheater : AbstrMovieTheater
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+            this.errorMessage = ex.Message;
+
         }
     }
 
@@ -178,6 +188,8 @@ public class MovieTheater : AbstrMovieTheater
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+            this.errorMessage = ex.Message;
+
         }
     }
 
@@ -199,24 +211,14 @@ public class MovieTheater : AbstrMovieTheater
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+            this.errorMessage = ex.Message;
+
         }
     }
 
     public override void ProcessExit()
     {
-        try
-        {
-            Exit();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
-    }
-    private static void Exit()
-    {
         Console.WriteLine("Goodbye");
-        Environment.Exit(1);
     }
 
     public override void ProcessGetAllCustomers()
@@ -239,6 +241,8 @@ public class MovieTheater : AbstrMovieTheater
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+            this.errorMessage = ex.Message;
+
         }
     }
 
@@ -262,6 +266,8 @@ public class MovieTheater : AbstrMovieTheater
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+            this.errorMessage = ex.Message;
+
         }
     }
 
@@ -294,6 +300,8 @@ public class MovieTheater : AbstrMovieTheater
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+            this.errorMessage = ex.Message;
+
         }
     }
     private static Customer LogIn(MovieTheaterComponents movieTheater)
@@ -310,7 +318,7 @@ public class MovieTheater : AbstrMovieTheater
         {
             return user;
         }
-        throw new Exception($"username {name} or {password} is incorrect.");
+        throw new Exception($"username '{name}' or '{password}' is incorrect.");
     }
 
     public override void ProcessRegistrate()
@@ -329,6 +337,8 @@ public class MovieTheater : AbstrMovieTheater
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+            this.errorMessage = ex.Message;
+
         }
     }
 
@@ -388,6 +398,8 @@ public class MovieTheater : AbstrMovieTheater
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+            this.errorMessage = ex.Message;
+
         }
 
     }
@@ -420,6 +432,8 @@ public class MovieTheater : AbstrMovieTheater
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+            this.errorMessage = ex.Message;
+
         }
     }
 
@@ -437,6 +451,8 @@ public class MovieTheater : AbstrMovieTheater
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+            this.errorMessage = ex.Message;
+
         }
     }
 
@@ -455,6 +471,8 @@ public class MovieTheater : AbstrMovieTheater
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+            this.errorMessage = ex.Message;
+
         }
     }
 
@@ -499,6 +517,8 @@ public class MovieTheater : AbstrMovieTheater
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+            this.errorMessage = ex.Message;
+
         }
     }
 }

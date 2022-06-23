@@ -4,9 +4,7 @@ using System.Collections.Generic;
 public class MovieAssistant : Customer
 {
     public delegate void CallbackMovieAdding(Movie movie);
-    public delegate void CallbackSessionCanceling(Session session);
     public event CallbackMovieAdding NotifyMovieAdding;
-    public event CallbackSessionCanceling NotifySessionCanceling;
     public MovieAssistant() { }
 
     public MovieAssistant SetMovieAssistant(Customer user)
@@ -193,10 +191,7 @@ public class MovieAssistant : Customer
         Console.WriteLine($"If you want to cacncel session (#{session.id}) type 'true', in other way type 'false': ");
         string isCanceled = Console.ReadLine();
         bool res = movieTheaterComponents.sessionRepository.CancelSession(session.id, bool.Parse(isCanceled));
-
-        // GetSubscribersForSessionCanceling(session, movieTheaterComponents);
-        // if (this.NotifySessionCanceling != null) { NotifySessionCanceling.Invoke(session); }
-    }
+}
 
     public void GetAllCustomers(MovieTheaterComponents movieTheaterComponents)
     {

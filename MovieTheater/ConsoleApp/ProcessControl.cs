@@ -11,16 +11,19 @@ public class ProcessControl : AbstrMovieTheater
     public override void ProcessAddMovie()
     {
         movieTheater.ProcessAddMovie();
+        this.errorMessage = movieTheater.errorMessage;
     }
 
     public override void ProcessAddMovieAssist()
     {
         movieTheater.ProcessAddMovieAssist();
+        this.errorMessage = movieTheater.errorMessage;
     }
 
     public override void ProcessBlockUser()
     {
         movieTheater.ProcessBlockUser();
+        this.errorMessage = movieTheater.errorMessage;
     }
 
     public override void ProcessBuyTicket()
@@ -28,6 +31,8 @@ public class ProcessControl : AbstrMovieTheater
         movieTheater.ProcessBuyTicket();
         try
         {
+            if (this.User == null) {; throw new Exception("First log in!"); }
+            this.errorMessage = movieTheater.errorMessage;
             int position = movieTheater.User.tickets.Count - 1;
             if (position == -1) { position = 0; }
             Ticket ticket = movieTheater.User.tickets[position];
@@ -82,6 +87,7 @@ public class ProcessControl : AbstrMovieTheater
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+            this.errorMessage = ex.Message;
         }
     }
 
@@ -105,75 +111,90 @@ public class ProcessControl : AbstrMovieTheater
     public override void ProcessCancelSession()
     {
         movieTheater.ProcessCancelSession();
+        this.errorMessage = movieTheater.errorMessage;
     }
 
     public override void ProcessDeleteMovie()
     {
         movieTheater.ProcessDeleteMovie();
+        this.errorMessage = movieTheater.errorMessage;
     }
 
     public override void ProcessDeleteMovieAssist()
     {
         movieTheater.ProcessDeleteMovieAssist();
+        this.errorMessage = movieTheater.errorMessage;
     }
 
     public override void ProcessDeleteMyAccount()
     {
         movieTheater.ProcessDeleteMyAccount();
+        this.errorMessage = movieTheater.errorMessage;
     }
 
     public override void ProcessExit()
     {
         movieTheater.ProcessExit();
+        this.errorMessage = movieTheater.errorMessage;
     }
 
     public override void ProcessGetAllCustomers()
     {
         movieTheater.ProcessGetAllCustomers();
+        this.errorMessage = movieTheater.errorMessage;
     }
 
     public override void ProcessGetAllMovies()
     {
         movieTheater.ProcessGetAllMovies();
+        this.errorMessage = movieTheater.errorMessage;
     }
 
     public override void ProcessLogIn()
     {
         movieTheater.ProcessLogIn();
+        this.errorMessage = movieTheater.errorMessage;
     }
 
     public override void ProcessRegistrate()
     {
         movieTheater.ProcessRegistrate();
+        this.errorMessage = movieTheater.errorMessage;
     }
 
     public override void ProcessShowBillboard()
     {
         movieTheater.ProcessShowBillboard();
+        this.errorMessage = movieTheater.errorMessage;
     }
 
     public override void ProcessShowMyAccount()
     {
         movieTheater.ProcessShowMyAccount();
+        this.errorMessage = movieTheater.errorMessage;
     }
 
     public override void ProcessShowMyTickets()
     {
         movieTheater.ProcessShowMyTickets();
+        this.errorMessage = movieTheater.errorMessage;
     }
 
     public override void ProcessUpdateMyAccount()
     {
         movieTheater.ProcessUpdateMyAccount();
+        this.errorMessage = movieTheater.errorMessage;
     }
 
     public override void ProcessLogOut()
     {
         movieTheater.ProcessLogOut();
+        this.errorMessage = movieTheater.errorMessage;
     }
 
     public override void ProcessAddHall()
     {
         movieTheater.ProcessAddHall();
+        this.errorMessage = movieTheater.errorMessage;
     }
 }
